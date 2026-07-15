@@ -15,7 +15,8 @@ import {
   getMembersMap,
 } from "@/lib/data";
 import { getSession } from "@/lib/auth";
-import { formatDate, formatTime } from "@/lib/format";
+import { formatTime } from "@/lib/format";
+import { CourseHeader } from "@/components/CourseHeader";
 import { Stars } from "@/components/Stars";
 import { MemberBadge } from "@/components/MemberBadge";
 import { deleteCourse } from "@/app/plans/actions";
@@ -56,10 +57,7 @@ export default async function MemoryDetail({
         간 데이트
       </Link>
 
-      <h1 className="text-[22px] font-extrabold tracking-tight">{course.title}</h1>
-      <p className="mt-1.5 text-[13px] text-text-sub tnum">
-        {formatDate(course.date)}
-      </p>
+      <CourseHeader id={course.id} title={course.title} date={course.date} />
 
       {/* 코스 요약 (읽기 전용) */}
       {stops.length > 0 && (

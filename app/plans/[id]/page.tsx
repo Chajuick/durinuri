@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ChevronLeft, Check, Trash2, Clock } from "lucide-react";
+import { ChevronLeft, Check, Trash2 } from "lucide-react";
 import { getCourse, getStops, getMembersMap } from "@/lib/data";
 import { buildSegments } from "@/lib/geo/travel";
 import { ensureCoords } from "@/lib/geo/backfill";
-import { formatDate } from "@/lib/format";
 import { markDone, deleteCourse } from "@/app/plans/actions";
 import { StopRow } from "./stop-row";
 import { AddStop } from "./add-stop";
 import { TravelBlock } from "@/components/TravelBlock";
+import { CourseHeader } from "@/components/CourseHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -39,19 +39,12 @@ export default async function CourseDetail({
         갈 데이트
       </Link>
 
-      <h1 className="text-[22px] font-extrabold tracking-tight">{course.title}</h1>
-      <div className="mt-1.5 flex items-center gap-2 text-[13px] text-text-sub">
-        <span className="tnum">{formatDate(course.date)}</span>
-        {editorName && (
-          <>
-            <span className="text-text-faint">·</span>
-            <span className="inline-flex items-center gap-1 text-text-faint">
-              <Clock className="size-3" strokeWidth={2} />
-              {editorName}가 마지막 수정
-            </span>
-          </>
-        )}
-      </div>
+      <CourseHeader
+        id={course.id}
+        title={course.title}
+        date={course.date}
+        editorName={editorName}
+      />
 
       {/* 타임라인 */}
       <section className="mt-6 flex flex-col">

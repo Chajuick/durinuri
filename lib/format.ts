@@ -21,6 +21,18 @@ export function formatMinutes(min: number | null | undefined): string {
   return `${h}시간 ${m}분`;
 }
 
+/** 이름 + 조사(이/가) — 받침 있으면 '이', 없으면 '가' */
+export function withIga(name: string): string {
+  const last = name.trim().slice(-1);
+  const code = last.charCodeAt(0);
+  // 한글 음절 범위면 받침 유무 판별, 아니면 기본 '가'
+  if (code >= 0xac00 && code <= 0xd7a3) {
+    const hasBatchim = (code - 0xac00) % 28 !== 0;
+    return `${name}${hasBatchim ? "이" : "가"}`;
+  }
+  return `${name}가`;
+}
+
 /** "2026-07-17" → "7월 17일 (금)" */
 export function formatDate(d: string | null): string {
   if (!d) return "날짜 미정";

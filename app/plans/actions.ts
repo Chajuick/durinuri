@@ -44,13 +44,13 @@ export async function updateCourse(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const title = String(formData.get("title") ?? "").trim();
   const date = String(formData.get("date") ?? "") || null;
-  const memo = String(formData.get("memo") ?? "");
   if (!id) return;
 
-  await getAdmin()
-    .from("courses")
-    .update({ title: title || "새 데이트", date, memo })
-    .eq("id", id);
+  const patch: Record<string, unknown> = { title: title || "새 데이트", date };
+  // memo 필드가 함께 왔을 때만 갱신 (제목만 수정 시 기존 메모 보존)
+  if (formData.has("memo")) patch.memo = String(formData.get("memo"));
+
+  await getAdmin().from("courses").update(patch).eq("id", id);
   await touchCourse(id);
   revalidateCourse(id);
 }
