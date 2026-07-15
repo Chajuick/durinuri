@@ -1,0 +1,89 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============ 디자인 토큰 (DESIGN-LANGUAGE.md) ============ */
+:root {
+  --font-sans: "Pretendard Variable", "Pretendard", -apple-system,
+    BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI",
+    sans-serif;
+
+  --bg: #fbf8f6;
+  --surface: #ffffff;
+  --surface-2: #f5f0ec;
+  --border: #ece5df;
+  --text: #2b2a28;
+  --text-sub: #837c75;
+  --text-faint: #b4aca4;
+
+  --primary: #f0806a;
+  --primary-ink: #c85b47;
+  --primary-bg: #fcede8;
+
+  --ok: #3fa37a;
+  --ok-bg: #e7f4ee;
+  --warn: #e0a34a;
+  --warn-bg: #fbf1df;
+  --danger: #e06b5c;
+  --danger-bg: #fbeae7;
+
+  /* 멤버 구분: 나=코랄(primary), 상대=쿨블루 */
+  --you-bg: #e7eef7;
+  --you-ink: #3e6e97;
+
+  --shadow-soft: 0 2px 10px rgba(43, 42, 40, 0.06);
+  --shadow-float: 0 12px 32px rgba(43, 42, 40, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1917;
+    --surface: #26221f;
+    --surface-2: #2f2a27;
+    --border: #3a342f;
+    --text: #f1ebe5;
+    --text-sub: #a99f97;
+    --text-faint: #726963;
+
+    --primary: #f59079;
+    --primary-ink: #f7a891;
+    --primary-bg: #3a2a25;
+
+    --ok: #5bbe95;
+    --ok-bg: #213229;
+    --warn: #e0b064;
+    --warn-bg: #352c1d;
+    --danger: #e8877a;
+    --danger-bg: #382320;
+
+    --you-bg: #26313c;
+    --you-ink: #93b9d8;
+
+    --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.28);
+    --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.44);
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  /* 숫자 정렬 흔들림 방지 유틸 */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  /* 키보드 포커스 가시성 */
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}

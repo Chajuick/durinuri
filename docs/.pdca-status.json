@@ -1,0 +1,357 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2026-07-15T02:45:07.421Z",
+  "activeFeatures": [
+    "date",
+    "supabase",
+    "login",
+    "settings",
+    "geo",
+    "plans",
+    "new",
+    "[id]",
+    "memories"
+  ],
+  "primaryFeature": "date",
+  "features": {
+    "date": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-07-15T02:23:29.280Z",
+        "lastUpdated": "2026-07-15T02:45:07.421Z"
+      },
+      "lastFile": "C:\\Users\\USER\\Desktop\\Project\\private\\date\\app\\page.tsx"
+    },
+    "supabase": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-07-15T02:33:18.825Z",
+        "lastUpdated": "2026-07-15T02:33:18.825Z"
+      },
+      "lastFile": "C:\\Users\\USER\\Desktop\\Project\\private\\date\\lib\\supabase\\admin.ts"
+    },
+    "login": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-07-15T02:34:46.217Z",
+        "lastUpdated": "2026-07-15T02:35:03.042Z"
+      },
+      "lastFile": "C:\\Users\\USER\\Desktop\\Project\\private\\date\\app\\login\\page.tsx"
+    },
+    "settings": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-07-15T02:35:16.161Z",
+        "lastUpdated": "2026-07-15T02:35:51.432Z"
+      },
+      "lastFile": "C:\\Users\\USER\\Desktop\\Project\\private\\date\\app\\settings\\page.tsx"
+    },
+    "geo": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-07-15T02:37:28.723Z",
+        "lastUpdated": "2026-07-15T02:38:02.532Z"
+      },
+      "lastFile": "C:\\Users\\USER\\Desktop\\Project\\private\\date\\lib\\geo\\travel.ts"
+    },
+    "plans": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-07-15T02:39:07.109Z",
+        "lastUpdated": "2026-07-15T02:40:00.350Z"
+      },
+      "lastFile": "C:\\Users\\USER\\Desktop\\Project\\private\\date\\app\\plans\\page.tsx"
+    },
+    "new": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-07-15T02:40:12.780Z",
+        "lastUpdated": "2026-07-15T02:40:12.780Z"
+      },
+      "lastFile": "C:\\Users\\USER\\Desktop\\Project\\private\\date\\app\\new\\page.tsx"
+    },
+    "[id]": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-07-15T02:40:52.526Z",
+        "lastUpdated": "2026-07-15T02:44:38.217Z"
+      },
+      "lastFile": "C:\\Users\\USER\\Desktop\\Project\\private\\date\\app\\memories\\[id]\\page.tsx"
+    },
+    "memories": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-07-15T02:42:48.930Z",
+        "lastUpdated": "2026-07-15T02:44:01.668Z"
+      },
+      "lastFile": "C:\\Users\\USER\\Desktop\\Project\\private\\date\\app\\memories\\page.tsx"
+    }
+  },
+  "pipeline": {
+    "currentPhase": 1,
+    "level": "Dynamic",
+    "phaseHistory": []
+  },
+  "session": {
+    "startedAt": "2026-07-15T01:39:31.256Z",
+    "onboardingCompleted": false,
+    "lastActivity": "2026-07-15T02:45:07.421Z"
+  },
+  "history": [
+    {
+      "timestamp": "2026-07-15T02:23:29.280Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:23:57.882Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:24:25.289Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:33:18.825Z",
+      "feature": "supabase",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:33:29.222Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:34:02.293Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:34:14.232Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:34:22.940Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:34:46.217Z",
+      "feature": "login",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:35:03.042Z",
+      "feature": "login",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:35:16.161Z",
+      "feature": "settings",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:35:30.213Z",
+      "feature": "settings",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:35:41.070Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:35:51.432Z",
+      "feature": "settings",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:37:28.723Z",
+      "feature": "geo",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:37:38.526Z",
+      "feature": "geo",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:37:51.253Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:38:02.532Z",
+      "feature": "geo",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:38:22.531Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:38:31.492Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:39:07.109Z",
+      "feature": "plans",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:39:36.562Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:40:00.350Z",
+      "feature": "plans",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:40:12.780Z",
+      "feature": "new",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:40:52.526Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:41:01.685Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:41:25.020Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:42:48.930Z",
+      "feature": "memories",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:42:58.731Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:43:04.627Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:43:17.218Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:43:39.005Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:44:01.668Z",
+      "feature": "memories",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:44:38.217Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-07-15T02:45:07.421Z",
+      "feature": "date",
+      "phase": "do",
+      "action": "updated"
+    }
+  ]
+}

@@ -1,0 +1,445 @@
+<title>우리 데이트 · 디자인 프리뷰</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ── lucide 아이콘 스프라이트 (라인 SVG, 이모지 금지) ── -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></symbol>
+  <symbol id="i-train" viewBox="0 0 24 24"><path d="M8 3.1V7a4 4 0 0 0 8 0V3.1"/><path d="m9 15-1-1"/><path d="m15 15 1-1"/><path d="M9 19c-2.8 0-5-2.2-5-5v-4a8 8 0 0 1 16 0v4c0 2.8-2.2 5-5 5Z"/><path d="m8 19-2 3"/><path d="m16 19 2 3"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><path d="m9 10 2 2 4-4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M21.8 10A10 10 0 1 1 17 3.3"/><path d="m9 11 3 3L22 4"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 5-5.5 10.2-7.4 11.8a1 1 0 0 1-1.2 0C9.5 20.2 4 15 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M16 2v4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-hg" viewBox="0 0 24 24"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.2a2 2 0 0 0-.6-1.4L12 12l-4.4 4.4A2 2 0 0 0 7 17.8V22"/><path d="M7 2v4.2a2 2 0 0 0 .6 1.4L12 12l4.4-4.4A2 2 0 0 0 17 6.2V2"/></symbol>
+</svg>
+
+<style>
+  :root {
+    --bg:#FBF8F6; --surface:#FFFFFF; --surface-2:#F5F0EC; --border:#ECE5DF;
+    --text:#2B2A28; --text-sub:#837C75; --text-faint:#B4ACA4;
+    --primary:#F0806A; --primary-ink:#C85B47; --primary-bg:#FCEDE8;
+    --ok:#3FA37A; --ok-bg:#E7F4EE; --warn:#E0A34A; --warn-bg:#FBF1DF;
+    --danger:#E06B5C; --danger-bg:#FBEAE7;
+    --shadow-soft:0 2px 10px rgba(43,42,40,.06);
+    --shadow-float:0 12px 32px rgba(43,42,40,.12);
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Segoe UI",sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#1C1917; --surface:#26221F; --surface-2:#2F2A27; --border:#3A342F;
+      --text:#F1EBE5; --text-sub:#A99F97; --text-faint:#726963;
+      --primary:#F59079; --primary-ink:#F7A891; --primary-bg:#3A2A25;
+      --ok:#5BBE95; --ok-bg:#213229; --warn:#E0B064; --warn-bg:#352C1D;
+      --danger:#E8877A; --danger-bg:#382320;
+      --shadow-soft:0 2px 10px rgba(0,0,0,.28); --shadow-float:0 12px 32px rgba(0,0,0,.44);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#FBF8F6; --surface:#FFFFFF; --surface-2:#F5F0EC; --border:#ECE5DF;
+    --text:#2B2A28; --text-sub:#837C75; --text-faint:#B4ACA4;
+    --primary:#F0806A; --primary-ink:#C85B47; --primary-bg:#FCEDE8;
+    --ok:#3FA37A; --ok-bg:#E7F4EE; --warn:#E0A34A; --warn-bg:#FBF1DF;
+    --danger:#E06B5C; --danger-bg:#FBEAE7;
+    --shadow-soft:0 2px 10px rgba(43,42,40,.06); --shadow-float:0 12px 32px rgba(43,42,40,.12);
+  }
+  :root[data-theme="dark"] {
+    --bg:#1C1917; --surface:#26221F; --surface-2:#2F2A27; --border:#3A342F;
+    --text:#F1EBE5; --text-sub:#A99F97; --text-faint:#726963;
+    --primary:#F59079; --primary-ink:#F7A891; --primary-bg:#3A2A25;
+    --ok:#5BBE95; --ok-bg:#213229; --warn:#E0B064; --warn-bg:#352C1D;
+    --danger:#E8877A; --danger-bg:#382320;
+    --shadow-soft:0 2px 10px rgba(0,0,0,.28); --shadow-float:0 12px 32px rgba(0,0,0,.44);
+  }
+
+  /* 멤버 구분 색 (나=코랄 / 상대=쿨블루) */
+  :root { --you-bg:#E7EEF7; --you-ink:#3E6E97; }
+  @media (prefers-color-scheme: dark) { :root { --you-bg:#26313C; --you-ink:#93B9D8; } }
+  :root[data-theme="light"] { --you-bg:#E7EEF7; --you-ink:#3E6E97; }
+  :root[data-theme="dark"] { --you-bg:#26313C; --you-ink:#93B9D8; }
+
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1040px; margin:0 auto; padding:32px 20px 96px; }
+  .num { font-variant-numeric:tabular-nums; }
+  .icon { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.75;
+    stroke-linecap:round; stroke-linejoin:round; flex:none; }
+  .icon.sm { width:16px; height:16px; }
+
+  /* header */
+  header.top { display:flex; align-items:center; justify-content:space-between; gap:16px;
+    margin-bottom:8px; }
+  .brand { display:flex; align-items:center; gap:10px; }
+  .brand .dot { width:34px; height:34px; border-radius:12px; background:var(--primary);
+    color:#fff; display:grid; place-items:center; box-shadow:var(--shadow-soft); }
+  .brand .dot .icon { stroke:#fff; }
+  .brand h1 { font-size:19px; font-weight:800; margin:0; letter-spacing:-.01em; }
+  .brand p { margin:1px 0 0; font-size:12px; color:var(--text-sub); }
+  .eyebrow { font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--primary-ink); }
+  .lead { font-size:15px; color:var(--text-sub); margin:14px 0 40px; max-width:60ch; }
+
+  section { margin:0 0 52px; }
+  .sec-head { display:flex; align-items:baseline; gap:12px; margin:0 0 18px; }
+  .sec-head h2 { font-size:15px; font-weight:800; margin:0; letter-spacing:-.01em; }
+  .sec-head span { font-size:13px; color:var(--text-faint); }
+
+  /* palette */
+  .swatches { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+  .sw { background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    overflow:hidden; box-shadow:var(--shadow-soft); }
+  .sw .chip { height:64px; }
+  .sw .meta { padding:10px 12px; }
+  .sw .meta b { font-size:13px; font-weight:700; display:block; }
+  .sw .meta code { font-size:11.5px; color:var(--text-sub); font-family:ui-monospace,monospace; }
+
+  /* type scale */
+  .type-card { background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    box-shadow:var(--shadow-soft); padding:8px 22px; }
+  .type-row { display:flex; align-items:baseline; gap:20px; padding:16px 0;
+    border-bottom:1px solid var(--border); }
+  .type-row:last-child { border-bottom:0; }
+  .type-row .tag { font-size:11px; color:var(--text-faint); width:120px; flex:none;
+    font-family:ui-monospace,monospace; }
+  .t-display { font-size:28px; font-weight:800; letter-spacing:-.02em; }
+  .t-title { font-size:20px; font-weight:700; letter-spacing:-.01em; }
+  .t-body { font-size:15px; font-weight:500; }
+  .t-label { font-size:13px; font-weight:600; }
+  .t-caption { font-size:12px; font-weight:500; color:var(--text-sub); }
+
+  /* phones */
+  .phones { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:24px; align-items:start; }
+  .phone { background:var(--surface-2); border:1px solid var(--border); border-radius:28px;
+    padding:14px; box-shadow:var(--shadow-float); }
+  .screen { background:var(--bg); border-radius:18px; padding:16px; min-height:200px; }
+  .tone-tag { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700;
+    letter-spacing:.04em; color:var(--text-sub); margin-bottom:12px; text-transform:uppercase; }
+
+  .screen-title { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .screen-title h3 { margin:0; font-size:18px; font-weight:800; letter-spacing:-.01em; }
+  .screen-title .sub { font-size:12px; color:var(--text-sub); margin-top:2px; }
+
+  /* 갈 데이트 timeline (토스톤) */
+  .stop { background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:13px 15px; box-shadow:var(--shadow-soft); display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .stop .place { display:flex; align-items:center; gap:9px; min-width:0; }
+  .stop .place .pin { color:var(--text-faint); }
+  .stop .place .nm { font-size:14.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .stop .time { font-size:15px; font-weight:800; letter-spacing:-.01em; }
+  .badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700;
+    padding:3px 8px; border-radius:999px; background:var(--primary-bg); color:var(--primary-ink); }
+
+  .rail { position:relative; margin:2px 0 2px 22px; padding:12px 0 12px 20px;
+    border-left:2px dashed var(--border); display:flex; flex-direction:column; gap:8px; }
+  .gap-label { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-sub); font-weight:600; }
+  .leg { display:flex; align-items:center; gap:8px; font-size:12.5px; }
+  .leg .mode { display:flex; align-items:center; gap:6px; color:var(--text-sub); font-weight:600; min-width:0; }
+  .leg .mode .icon { color:var(--text-sub); }
+  .slack { margin-left:auto; display:inline-flex; align-items:center; gap:4px;
+    font-size:11.5px; font-weight:700; padding:3px 8px; border-radius:999px; white-space:nowrap; }
+  .slack.ok { background:var(--ok-bg); color:var(--ok); }
+  .slack.bad { background:var(--danger-bg); color:var(--danger); }
+
+  /* 간 데이트 (썸원톤) */
+  .memory { background:var(--surface); border:1px solid var(--border); border-radius:20px;
+    box-shadow:var(--shadow-soft); overflow:hidden; }
+  .photo { aspect-ratio:4/3; position:relative;
+    background:
+      radial-gradient(120% 90% at 25% 20%, rgba(255,255,255,.4), transparent 60%),
+      linear-gradient(135deg,#F6B89E,#EF8E86 45%,#D98AA6); }
+  .photo .cam { position:absolute; inset:0; margin:auto; width:34px; height:34px; color:rgba(255,255,255,.9); }
+  .photo .cap { position:absolute; left:12px; bottom:10px; color:#fff; font-size:12px; font-weight:600;
+    text-shadow:0 1px 4px rgba(0,0,0,.35); }
+  .memory .body { padding:15px 16px 17px; }
+  .memory h4 { margin:0 0 6px; font-size:17px; font-weight:800; letter-spacing:-.01em; }
+  .stars { display:inline-flex; gap:3px; margin:2px 0 10px; }
+  .star { width:18px; height:18px; }
+  .star.f { fill:var(--primary); stroke:var(--primary); }
+  .star.e { fill:none; stroke:var(--text-faint); }
+  .photo .author { position:absolute; left:12px; top:11px; display:inline-flex; align-items:center; gap:5px;
+    background:rgba(0,0,0,.34); color:#fff; font-size:11px; font-weight:700; padding:4px 10px;
+    border-radius:999px; -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }
+  .reviews-label { font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--text-faint); margin:2px 0 10px; }
+  .review { display:flex; gap:10px; padding:11px 0; border-top:1px solid var(--border); }
+  .review:first-of-type { border-top:0; padding-top:2px; }
+  .namebadge { display:inline-flex; align-items:center; font-size:11px; font-weight:800;
+    padding:3px 9px; border-radius:999px; height:fit-content; flex:none; }
+  .namebadge.me { background:var(--primary-bg); color:var(--primary-ink); }
+  .namebadge.you { background:var(--you-bg); color:var(--you-ink); }
+  .review .rbody { min-width:0; }
+  .review .rstars { display:inline-flex; gap:2px; margin:1px 0 5px; }
+  .review .rstars .icon { width:15px; height:15px; }
+  .review .rtext { margin:0; font-size:13.5px; line-height:1.5; color:var(--text); }
+
+  /* components */
+  .grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; }
+  .panel { background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:18px; box-shadow:var(--shadow-soft); }
+  .panel .plabel { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--text-faint); margin-bottom:14px; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+  .btn { display:inline-flex; align-items:center; gap:7px; font-family:inherit; font-size:14px;
+    font-weight:700; border-radius:10px; padding:10px 16px; border:1px solid transparent; cursor:pointer; }
+  .btn.primary { background:var(--primary); color:#fff; box-shadow:var(--shadow-soft); }
+  .btn.secondary { background:var(--surface); color:var(--text); border-color:var(--border); }
+  .btn.ghost { background:transparent; color:var(--primary-ink); }
+  .btn .icon { stroke:currentColor; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .chip-b { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700;
+    padding:5px 11px; border-radius:999px; }
+  .chip-b.pri { background:var(--primary-bg); color:var(--primary-ink); }
+  .chip-b.ok { background:var(--ok-bg); color:var(--ok); }
+  .chip-b.warn { background:var(--warn-bg); color:var(--warn); }
+  .chip-b.bad { background:var(--danger-bg); color:var(--danger); }
+  .iconset { display:flex; flex-wrap:wrap; gap:14px; color:var(--text-sub); }
+  .iconset .ic { display:flex; flex-direction:column; align-items:center; gap:6px; width:56px; }
+  .iconset .ic span { font-size:10.5px; color:var(--text-faint); }
+  .iconset .ic .icon { width:22px; height:22px; }
+
+  /* bottom nav sample */
+  .bnav { display:flex; justify-content:space-around; margin-top:14px; padding:10px 6px 4px;
+    border-top:1px solid var(--border); }
+  .bnav a { display:flex; flex-direction:column; align-items:center; gap:4px; font-size:10.5px;
+    color:var(--text-faint); font-weight:600; text-decoration:none; }
+  .bnav a.on { color:var(--primary-ink); }
+  .bnav a.on .icon { stroke:var(--primary); }
+
+  .foot { font-size:12px; color:var(--text-faint); text-align:center; margin-top:20px; }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <span class="dot"><svg class="icon"><use href="#i-cal"/></svg></span>
+      <div>
+        <h1>우리 데이트</h1>
+        <p>디자인 프리뷰</p>
+      </div>
+    </div>
+    <span class="chip-b pri"><svg class="icon sm"><use href="#i-bookmark"/></svg>하이브리드 톤</span>
+  </header>
+
+  <p class="lead">둘이 함께 쓰는 데이트 앱의 <b>색 · 타이포 · 컴포넌트</b>를 한자리에 모았어요. 갈 데이트는 깔끔한 일정 중심(토스톤), 간 데이트는 포근한 추억 중심(썸원톤). 사진·리뷰는 <b>서로 남기고</b> 이름표로 누가 남긴 건지 구분합니다.</p>
+
+  <!-- 컬러 -->
+  <section>
+    <div class="sec-head"><span class="eyebrow">01</span><h2>컬러 팔레트</h2><span>웜 뉴트럴 + 코랄 포인트</span></div>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#FBF8F6"></div><div class="meta"><b>배경</b><code>#FBF8F6</code></div></div>
+      <div class="sw"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid #ECE5DF"></div><div class="meta"><b>서피스</b><code>#FFFFFF</code></div></div>
+      <div class="sw"><div class="chip" style="background:#2B2A28"></div><div class="meta"><b>본문 텍스트</b><code>#2B2A28</code></div></div>
+      <div class="sw"><div class="chip" style="background:#F0806A"></div><div class="meta"><b>포인트 · 코랄</b><code>#F0806A</code></div></div>
+      <div class="sw"><div class="chip" style="background:#FCEDE8"></div><div class="meta"><b>코랄 배경</b><code>#FCEDE8</code></div></div>
+      <div class="sw"><div class="chip" style="background:#3FA37A"></div><div class="meta"><b>여유</b><code>#3FA37A</code></div></div>
+      <div class="sw"><div class="chip" style="background:#E0A34A"></div><div class="meta"><b>주의</b><code>#E0A34A</code></div></div>
+      <div class="sw"><div class="chip" style="background:#E06B5C"></div><div class="meta"><b>지각 위험</b><code>#E06B5C</code></div></div>
+    </div>
+  </section>
+
+  <!-- 타이포 -->
+  <section>
+    <div class="sec-head"><span class="eyebrow">02</span><h2>타이포그래피</h2><span>Pretendard 계열 · 숫자는 tabular</span></div>
+    <div class="type-card">
+      <div class="type-row"><span class="tag">Display 28/800</span><span class="t-display">토요일 데이트</span></div>
+      <div class="type-row"><span class="tag">Title 20/700</span><span class="t-title">명동 반지야놀자</span></div>
+      <div class="type-row"><span class="tag">Body 15/500</span><span class="t-body">사진과 함께 그날의 기억을 남겨요.</span></div>
+      <div class="type-row"><span class="tag">Label 13/600</span><span class="t-label num">18:30 · 예약 완료</span></div>
+      <div class="type-row"><span class="tag">Caption 12/500</span><span class="t-caption">지도·이동시간은 카카오/ODsay 기준 근사치</span></div>
+    </div>
+  </section>
+
+  <!-- 두 화면 톤 -->
+  <section>
+    <div class="sec-head"><span class="eyebrow">03</span><h2>두 화면의 톤</h2><span>같은 토큰, 다른 밀도·따뜻함</span></div>
+    <div class="phones">
+
+      <!-- 갈 데이트 : 토스톤 -->
+      <div class="phone">
+        <div class="screen">
+          <div class="tone-tag"><svg class="icon sm"><use href="#i-cal"/></svg>갈 데이트 · 토스톤</div>
+          <div class="screen-title">
+            <div>
+              <h3>금요일 데이트</h3>
+              <div class="sub num">7월 17일 · 예정</div>
+            </div>
+            <span class="badge"><svg class="icon sm"><use href="#i-bookmark"/></svg>예약 2</span>
+          </div>
+
+          <div class="stop">
+            <div class="place"><svg class="icon sm pin"><use href="#i-pin"/></svg><span class="nm">신당 오신돼지갈비</span></div>
+            <span class="time num">16:00</span>
+          </div>
+          <div class="rail">
+            <div class="gap-label"><svg class="icon sm"><use href="#i-clock"/></svg>다음까지 <span class="num">4시간</span></div>
+            <div class="leg"><span class="mode"><svg class="icon sm"><use href="#i-car"/></svg>차량 <span class="num">약 32분</span></span><span class="slack ok"><svg class="icon sm"><use href="#i-check"/></svg>여유 3시간 28분</span></div>
+            <div class="leg"><span class="mode"><svg class="icon sm"><use href="#i-train"/></svg>대중교통 <span class="num">약 55분</span> <span class="num" style="color:var(--text-faint)">(+대기 8분)</span></span><span class="slack ok">여유 3시간</span></div>
+          </div>
+          <div class="stop">
+            <div class="place"><svg class="icon sm pin"><use href="#i-pin"/></svg><span class="nm">하남 미미사 양꼬치</span></div>
+            <span class="time num">20:00</span>
+          </div>
+
+          <div style="height:16px"></div>
+
+          <div class="screen-title" style="margin-bottom:12px">
+            <div><h3 style="font-size:16px">토요일 · 촉박 구간</h3></div>
+            <span class="chip-b bad"><svg class="icon sm"><use href="#i-alert"/></svg>확인 필요</span>
+          </div>
+          <div class="stop">
+            <div class="place"><svg class="icon sm pin"><use href="#i-pin"/></svg><span class="nm">강동 홍대닭갈비</span></div>
+            <span class="time num">11:00</span>
+          </div>
+          <div class="rail">
+            <div class="gap-label"><svg class="icon sm"><use href="#i-clock"/></svg>다음까지 <span class="num">2시간</span></div>
+            <div class="leg"><span class="mode"><svg class="icon sm"><use href="#i-car"/></svg>차량 <span class="num">약 45분</span></span><span class="slack ok">여유 1시간 15분</span></div>
+            <div class="leg"><span class="mode"><svg class="icon sm"><use href="#i-train"/></svg>대중교통 <span class="num">약 1시간 10분</span> <span class="num" style="color:var(--text-faint)">(+대기 10분)</span></span><span class="slack bad"><svg class="icon sm"><use href="#i-alert"/></svg>20분 촉박</span></div>
+          </div>
+          <div class="stop">
+            <div class="place"><svg class="icon sm pin"><use href="#i-pin"/></svg><span class="nm">명동 반지야놀자</span></div>
+            <span class="time num">13:00</span>
+          </div>
+
+          <div class="bnav">
+            <a class="on"><svg class="icon"><use href="#i-home"/></svg>홈</a>
+            <a><svg class="icon"><use href="#i-cal"/></svg>갈 데이트</a>
+            <a><svg class="icon"><use href="#i-image"/></svg>간 데이트</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 간 데이트 : 썸원톤 -->
+      <div class="phone">
+        <div class="screen">
+          <div class="tone-tag"><svg class="icon sm"><use href="#i-image"/></svg>간 데이트 · 썸원톤</div>
+          <div class="memory">
+            <div class="photo">
+              <span class="author"><svg class="icon sm" style="stroke:#fff"><use href="#i-camera"/></svg>지훈이 올림</span>
+              <svg class="icon cam"><use href="#i-camera"/></svg>
+              <span class="cap">신당동, 노을 지던 저녁</span>
+            </div>
+            <div class="body">
+              <h4>금요일 데이트</h4>
+              <div class="reviews-label">서로의 리뷰</div>
+
+              <div class="review">
+                <span class="namebadge me">나</span>
+                <div class="rbody">
+                  <div class="rstars" aria-label="4점">
+                    <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+                    <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+                    <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+                    <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+                    <svg class="icon star e" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+                  </div>
+                  <p class="rtext">양꼬치 진짜 맛있었고, 돌아오는 길 손잡고 걸은 게 제일 좋았어.</p>
+                </div>
+              </div>
+
+              <div class="review">
+                <span class="namebadge you">지은</span>
+                <div class="rbody">
+                  <div class="rstars" aria-label="5점">
+                    <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+                    <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+                    <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+                    <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+                    <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+                  </div>
+                  <p class="rtext">인생 양꼬치… 다음에 또 오자. 사진 많이 찍어줘서 고마워!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:14px"></div>
+          <div class="row" style="justify-content:space-between">
+            <div class="row">
+              <span class="chip-b pri"><svg class="icon sm"><use href="#i-image"/></svg>사진 12</span>
+              <span class="chip-b ok"><svg class="icon sm"><use href="#i-check"/></svg>다녀옴</span>
+            </div>
+            <span class="chip-b" style="background:var(--surface-2);color:var(--text-sub)"><svg class="icon sm"><use href="#i-chev"/></svg>더보기</span>
+          </div>
+
+          <div class="bnav">
+            <a><svg class="icon"><use href="#i-home"/></svg>홈</a>
+            <a><svg class="icon"><use href="#i-cal"/></svg>갈 데이트</a>
+            <a class="on"><svg class="icon"><use href="#i-image"/></svg>간 데이트</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 컴포넌트 -->
+  <section>
+    <div class="sec-head"><span class="eyebrow">04</span><h2>컴포넌트</h2><span>버튼 · 뱃지 · 별점 · 아이콘</span></div>
+    <div class="grid2">
+
+      <div class="panel">
+        <div class="plabel">버튼</div>
+        <div class="row">
+          <button class="btn primary"><svg class="icon sm"><use href="#i-plus"/></svg>일정 추가</button>
+          <button class="btn secondary"><svg class="icon sm"><use href="#i-cal"/></svg>날짜 변경</button>
+          <button class="btn ghost">다녀왔어요</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="plabel">뱃지 · 칩</div>
+        <div class="chips">
+          <span class="chip-b pri"><svg class="icon sm"><use href="#i-bookmark"/></svg>예약</span>
+          <span class="chip-b ok"><svg class="icon sm"><use href="#i-check"/></svg>여유 3시간</span>
+          <span class="chip-b warn"><svg class="icon sm"><use href="#i-hg"/></svg>대기 10분</span>
+          <span class="chip-b bad"><svg class="icon sm"><use href="#i-alert"/></svg>20분 촉박</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="plabel">별점</div>
+        <div class="stars">
+          <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+          <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+          <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+          <svg class="icon star f" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+          <svg class="icon star e" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></svg>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="plabel">멤버 이름표 (작성자 구분)</div>
+        <div class="row">
+          <span class="namebadge me">나</span>
+          <span class="namebadge you">지은</span>
+          <span class="chip-b" style="background:var(--surface-2);color:var(--text-sub)"><svg class="icon sm"><use href="#i-clock"/></svg>지은이 시간 변경함</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="plabel">아이콘 (lucide 라인)</div>
+        <div class="iconset">
+          <div class="ic"><svg class="icon"><use href="#i-car"/></svg><span>차량</span></div>
+          <div class="ic"><svg class="icon"><use href="#i-train"/></svg><span>대중교통</span></div>
+          <div class="ic"><svg class="icon"><use href="#i-clock"/></svg><span>시간</span></div>
+          <div class="ic"><svg class="icon"><use href="#i-hg"/></svg><span>대기</span></div>
+          <div class="ic"><svg class="icon"><use href="#i-pin"/></svg><span>위치</span></div>
+          <div class="ic"><svg class="icon"><use href="#i-bookmark"/></svg><span>예약</span></div>
+          <div class="ic"><svg class="icon"><use href="#i-camera"/></svg><span>사진</span></div>
+          <div class="ic"><svg class="icon"><use href="#i-alert"/></svg><span>경고</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <p class="foot">우리 데이트 · 디자인 토큰은 언제든 교체 가능 (색·서체는 변수로만 참조)</p>
+
+</div>
