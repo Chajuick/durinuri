@@ -43,6 +43,7 @@ create table if not exists stops (
   course_id   uuid not null references courses(id) on delete cascade,
   sort_order  int  not null default 0,
   name        text not null,
+  date        date,                        -- 장소별 날짜(여러 날 데이트용, 없으면 코스 날짜)
   place_query text,                        -- 카카오 검색 원문
   lat         double precision,            -- 지오코딩 결과 캐시
   lng         double precision,

@@ -86,7 +86,13 @@ export function StopRow({
   );
 }
 
-export function StopFields({ stop }: { stop?: Stop }) {
+export function StopFields({
+  stop,
+  defaultDate,
+}: {
+  stop?: Stop;
+  defaultDate?: string | null;
+}) {
   return (
     <>
       <input
@@ -102,6 +108,17 @@ export function StopFields({ stop }: { stop?: Stop }) {
         placeholder="지도 검색어 (비우면 이름으로 검색)"
         className="h-11 rounded-sm border border-border bg-bg px-3 text-[13px] outline-none focus:border-primary"
       />
+      <label className="flex flex-col gap-1">
+        <span className="text-[11.5px] font-semibold text-text-faint">
+          날짜 (비우면 데이트 날짜)
+        </span>
+        <input
+          name="date"
+          type="date"
+          defaultValue={stop?.date ?? defaultDate ?? ""}
+          className="h-11 rounded-sm border border-border bg-bg px-3 text-[14px] outline-none focus:border-primary"
+        />
+      </label>
       <div className="flex gap-2">
         <label className="flex flex-1 flex-col gap-1">
           <span className="text-[11.5px] font-semibold text-text-faint">도착 시각</span>

@@ -82,6 +82,7 @@ export async function addStop(formData: FormData) {
   if (!courseId || !name) return;
 
   const placeQuery = String(formData.get("place_query") ?? "").trim() || name;
+  const date = String(formData.get("date") ?? "") || null;
   const arriveAt = String(formData.get("arrive_at") ?? "") || null;
   const stayRaw = String(formData.get("stay_min") ?? "").trim();
   const stayMin = stayRaw ? Number(stayRaw) : null;
@@ -103,6 +104,7 @@ export async function addStop(formData: FormData) {
     course_id: courseId,
     sort_order: sortOrder,
     name,
+    date,
     place_query: placeQuery,
     lat: coord?.lat ?? null,
     lng: coord?.lng ?? null,
@@ -121,6 +123,7 @@ export async function updateStop(formData: FormData) {
   if (!id || !name) return;
 
   const placeQuery = String(formData.get("place_query") ?? "").trim() || name;
+  const date = String(formData.get("date") ?? "") || null;
   const arriveAt = String(formData.get("arrive_at") ?? "") || null;
   const stayRaw = String(formData.get("stay_min") ?? "").trim();
   const stayMin = stayRaw ? Number(stayRaw) : null;
@@ -146,6 +149,7 @@ export async function updateStop(formData: FormData) {
     .from("stops")
     .update({
       name,
+      date,
       place_query: placeQuery,
       lat,
       lng,

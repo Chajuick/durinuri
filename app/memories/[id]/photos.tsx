@@ -8,7 +8,15 @@ import { browserClient } from "@/lib/supabase/browser";
 import { compressImage } from "@/lib/image";
 import { PHOTO_BUCKET } from "@/lib/constants";
 
-export function PhotoUploader({ courseId }: { courseId: string }) {
+export function PhotoUploader({
+  courseId,
+  stopId,
+  compact,
+}: {
+  courseId: string;
+  stopId?: string | null;
+  compact?: boolean;
+}) {
   const router = useRouter();
   const [files, setFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
@@ -54,6 +62,7 @@ export function PhotoUploader({ courseId }: { courseId: string }) {
       await registerPhotos(
         courseId,
         slots.map((s) => ({ path: s.path, caption })),
+        stopId ?? null,
       );
       reset();
       router.refresh();

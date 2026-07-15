@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import {
-  ChevronLeft,
-  MapPin,
-  Trash2,
-  Undo2,
-  BookmarkCheck,
-} from "lucide-react";
+import { ChevronLeft, Trash2, Undo2, Images } from "lucide-react";
 import {
   getCourse,
   getStops,
@@ -15,13 +9,18 @@ import {
   getMembersMap,
 } from "@/lib/data";
 import { getSession } from "@/lib/auth";
-import { formatTime } from "@/lib/format";
+import { groupStopsByDay } from "@/lib/stops";
+import type { Photo } from "@/lib/types";
 import { CourseHeader } from "@/components/CourseHeader";
+import { DayHeader } from "@/components/DayHeader";
+import { WeatherChip } from "@/components/WeatherChip";
+import { getDayWeather } from "@/lib/weather";
 import { Stars } from "@/components/Stars";
 import { MemberBadge } from "@/components/MemberBadge";
 import { deleteCourse } from "@/app/plans/actions";
 import { deletePhoto, markPlanned } from "@/app/memories/actions";
 import { ReviewForm } from "./review-form";
+import { JourneyMemory } from "./journey";
 import { PhotoUploader } from "./photos";
 
 export const dynamic = "force-dynamic";
@@ -47,6 +46,27 @@ export default async function MemoryDetail({
   const myReview = reviews.find((r) => r.author_id === myId) ?? null;
   const otherReviews = reviews.filter((r) => r.author_id !== myId);
 
+  const days = groupStopsByDay(stops, course.date);
+  const multiDay = days.length > 1;
+  const dayWeather = await Promise.all(
+    days.map((d) => {
+      const c = d.stops.find((s) => s.lat != null && s.lng != null);
+      return c ? getDayWeather(c.lat!, c.lng!, d.date) : Promise.resolve(null);
+    }),
+  );
+
+  const photosByStop = new Map<string, Photo[]>();
+  const orphanPhotos: Photo[] = [];
+  for (const p of photos) {
+    if (p.stop_id) {
+      const arr = photosByStop.get(p.stop_id) ?? [];
+      arr.push(p);
+      photosByStop.set(p.stop_id, arr);
+    } else {
+      orphanPhotos.push(p);
+    }
+  }
+
   return (
     <main className="mx-auto max-w-md px-5 pb-24 pt-6">
       <Link
@@ -59,80 +79,105 @@ export default async function MemoryDetail({
 
       <CourseHeader id={course.id} title={course.title} date={course.date} />
 
-      {/* 코스 요약 (읽기 전용) */}
-      {stops.length > 0 && (
-        <section className="mt-5 flex flex-col gap-1.5 rounded-md border border-border bg-surface p-4 shadow-soft">
-          {stops.map((s) => (
-            <div key={s.id} className="flex items-center gap-2 text-[13.5px]">
-              <MapPin className="size-4 shrink-0 text-text-faint" strokeWidth={1.75} />
-              <span className="font-semibold">{s.name}</span>
-              {s.is_reserved && (
-                <BookmarkCheck className="size-3.5 text-primary" strokeWidth={2} />
-              )}
-              <span className="tnum ml-auto font-bold text-text-sub">
-                {formatTime(s.arrive_at)}
-              </span>
-            </div>
-          ))}
-        </section>
+      {!multiDay && dayWeather[0] && (
+        <div className="mt-3">
+          <WeatherChip weather={dayWeather[0]} />
+        </div>
       )}
 
-      {/* 사진 */}
-      <section className="mt-7">
-        <h2 className="mb-3 text-[15px] font-extrabold">사진</h2>
-        {photos.length > 0 && (
-          <div className="mb-3 grid grid-cols-2 gap-2.5">
-            {photos.map((p) => {
-              const variant = p.author_id === myId ? "me" : "you";
-              const authorName = p.author_id ? members[p.author_id]?.name : null;
-              return (
-                <div
-                  key={p.id}
-                  className="group relative overflow-hidden rounded-lg border border-border bg-surface-2"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={p.url}
-                    alt={p.caption ?? "사진"}
-                    className="aspect-square w-full object-cover"
-                    loading="lazy"
-                  />
-                  {authorName && (
-                    <div className="absolute left-1.5 top-1.5">
-                      <MemberBadge name={authorName} variant={variant} />
-                    </div>
-                  )}
-                  <form
-                    action={deletePhoto}
-                    className="absolute right-1.5 top-1.5"
-                  >
-                    <input type="hidden" name="id" value={p.id} />
-                    <input type="hidden" name="course_id" value={course.id} />
-                    <button
-                      type="submit"
-                      aria-label="사진 삭제"
-                      className="grid size-7 place-items-center rounded-full bg-black/40 text-white backdrop-blur"
-                    >
-                      <Trash2 className="size-3.5" strokeWidth={2} />
-                    </button>
-                  </form>
-                  {p.caption && (
-                    <p className="absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-black/55 to-transparent px-2 pb-1.5 pt-4 text-[11px] font-semibold text-white">
-                      {p.caption}
-                    </p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+      {/* 여정별 추억 */}
+      <section className="mt-6">
+        {stops.length === 0 && (
+          <p className="rounded-md border border-dashed border-border bg-surface/60 px-4 py-6 text-center text-[13px] text-text-sub">
+            여정이 없어요. 「다시 갈 데이트로」에서 장소(여정)를 추가하면
+            여정마다 사진·한마디를 남길 수 있어요.
+          </p>
         )}
-        <PhotoUploader courseId={course.id} />
+        {days.map((day, di) => (
+          <div key={day.date ?? "nodate"}>
+            {multiDay && (
+              <DayHeader
+                date={day.date}
+                right={
+                  dayWeather[di] ? (
+                    <WeatherChip weather={dayWeather[di]!} />
+                  ) : undefined
+                }
+              />
+            )}
+            <div className="mb-3 flex flex-col gap-3">
+              {day.stops.map((stop) => (
+                <JourneyMemory
+                  key={stop.id}
+                  stop={stop}
+                  photos={photosByStop.get(stop.id) ?? []}
+                  members={members}
+                  myId={myId}
+                  courseId={course.id}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
+
+      {/* 여정 없이 올린 사진 (예전 사진 또는 여정 없는 데이트) */}
+      {(orphanPhotos.length > 0 || stops.length === 0) && (
+        <section className="mt-4">
+          <h2 className="mb-2 flex items-center gap-1.5 text-[14px] font-extrabold text-text-sub">
+            <Images className="size-4" strokeWidth={1.75} />
+            여정 없이 올린 사진
+          </h2>
+          {orphanPhotos.length > 0 && (
+            <div className="mb-3 grid grid-cols-3 gap-2">
+              {orphanPhotos.map((p) => {
+                const variant = p.author_id === myId ? "me" : "you";
+                const authorName = p.author_id
+                  ? members[p.author_id]?.name
+                  : null;
+                return (
+                  <div
+                    key={p.id}
+                    className="relative overflow-hidden rounded-md border border-border bg-surface-2"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={p.url}
+                      alt={p.caption ?? "사진"}
+                      className="aspect-square w-full object-cover"
+                      loading="lazy"
+                    />
+                    {authorName && (
+                      <div className="absolute left-1 top-1 origin-top-left scale-90">
+                        <MemberBadge name={authorName} variant={variant} />
+                      </div>
+                    )}
+                    <form action={deletePhoto} className="absolute right-1 top-1">
+                      <input type="hidden" name="id" value={p.id} />
+                      <input type="hidden" name="course_id" value={course.id} />
+                      <button
+                        type="submit"
+                        aria-label="사진 삭제"
+                        className="grid size-6 place-items-center rounded-full bg-black/45 text-white backdrop-blur"
+                      >
+                        <Trash2 className="size-3" strokeWidth={2} />
+                      </button>
+                    </form>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          <PhotoUploader courseId={course.id} />
+        </section>
+      )}
 
       {/* 서로의 리뷰 */}
       <section className="mt-7">
         <h2 className="mb-1 text-[15px] font-extrabold">서로의 리뷰</h2>
-        <p className="mb-3 text-[12.5px] text-text-sub">각자 별점과 한줄평을 남겨요.</p>
+        <p className="mb-3 text-[12.5px] text-text-sub">
+          데이트 전체에 각자 별점과 한줄평을 남겨요.
+        </p>
 
         <div className="flex flex-col gap-3">
           <div>
@@ -160,7 +205,9 @@ export default async function MemoryDetail({
                   {r.one_line ? (
                     <p className="text-[14px] leading-relaxed">{r.one_line}</p>
                   ) : (
-                    <p className="text-[13px] text-text-faint">한줄평이 아직 없어요</p>
+                    <p className="text-[13px] text-text-faint">
+                      한줄평이 아직 없어요
+                    </p>
                   )}
                 </div>
               </div>

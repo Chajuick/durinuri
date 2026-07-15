@@ -3,12 +3,16 @@ import { notFound, redirect } from "next/navigation";
 import { ChevronLeft, Check, Trash2 } from "lucide-react";
 import { getCourse, getStops, getMembersMap } from "@/lib/data";
 import { buildSegments } from "@/lib/geo/travel";
+import { groupStopsByDay } from "@/lib/stops";
 import { ensureCoords } from "@/lib/geo/backfill";
 import { markDone, deleteCourse } from "@/app/plans/actions";
 import { StopRow } from "./stop-row";
 import { AddStop } from "./add-stop";
 import { TravelBlock } from "@/components/TravelBlock";
 import { CourseHeader } from "@/components/CourseHeader";
+import { DayHeader } from "@/components/DayHeader";
+import { WeatherChip } from "@/components/WeatherChip";
+import { getDayWeather } from "@/lib/weather";
 
 export const dynamic = "force-dynamic";
 
@@ -22,11 +26,19 @@ export default async function CourseDetail({
   if (course.status === "done") redirect(`/memories/${course.id}`);
 
   const stops = await ensureCoords(await getStops(course.id));
-  const segments = await buildSegments(stops);
+  const segments = await buildSegments(stops, course.date);
   const members = await getMembersMap();
 
   const segByFrom = new Map(segments.map((s) => [s.fromStopId, s]));
   const editorName = course.updated_by ? members[course.updated_by]?.name : null;
+  const days = groupStopsByDay(stops, course.date);
+  const multiDay = days.length > 1;
+  const dayWeather = await Promise.all(
+    days.map((d) => {
+      const c = d.stops.find((s) => s.lat != null && s.lng != null);
+      return c ? getDayWeather(c.lat!, c.lng!, d.date) : Promise.resolve(null);
+    }),
+  );
 
   return (
     <main className="mx-auto max-w-md px-5 pb-24 pt-6">
@@ -45,6 +57,12 @@ export default async function CourseDetail({
         editorName={editorName}
       />
 
+      {!multiDay && dayWeather[0] && (
+        <div className="mt-3">
+          <WeatherChip weather={dayWeather[0]} />
+        </div>
+      )}
+
       {/* 타임라인 */}
       <section className="mt-6 flex flex-col">
         {stops.length === 0 && (
@@ -52,19 +70,33 @@ export default async function CourseDetail({
             아직 장소가 없어요. 아래에서 첫 장소를 추가해봐요.
           </p>
         )}
-        {stops.map((stop, i) => {
-          const seg = segByFrom.get(stop.id);
-          return (
-            <div key={stop.id} className="flex flex-col">
-              <StopRow stop={stop} courseId={course.id} />
-              {seg && i < stops.length - 1 && <TravelBlock segment={seg} />}
-            </div>
-          );
-        })}
+        {days.map((day, di) => (
+          <div key={day.date ?? "nodate"} className="flex flex-col">
+            {multiDay && (
+              <DayHeader
+                date={day.date}
+                right={
+                  dayWeather[di] ? (
+                    <WeatherChip weather={dayWeather[di]!} />
+                  ) : undefined
+                }
+              />
+            )}
+            {day.stops.map((stop) => {
+              const seg = segByFrom.get(stop.id);
+              return (
+                <div key={stop.id} className="flex flex-col">
+                  <StopRow stop={stop} courseId={course.id} />
+                  {seg && <TravelBlock segment={seg} />}
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </section>
 
       <div className="mt-3">
-        <AddStop courseId={course.id} />
+        <AddStop courseId={course.id} courseDate={course.date} />
       </div>
 
       {/* 액션 */}

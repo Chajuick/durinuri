@@ -34,10 +34,11 @@ export async function prepareUpload(
   return slots;
 }
 
-/** 2) 업로드 완료된 파일들을 photos 레코드로 등록 */
+/** 2) 업로드 완료된 파일들을 photos 레코드로 등록 (여정별) */
 export async function registerPhotos(
   courseId: string,
   items: { path: string; caption?: string | null }[],
+  stopId?: string | null,
 ) {
   if (!courseId || items.length === 0) return;
   const session = await getSession();
@@ -45,12 +46,23 @@ export async function registerPhotos(
 
   const rows = items.map((it) => ({
     course_id: courseId,
+    stop_id: stopId ?? null,
     author_id: session?.memberId ?? null,
     url: admin.storage.from(PHOTO_BUCKET).getPublicUrl(it.path).data.publicUrl,
     caption: it.caption?.trim() || null,
   }));
 
   await admin.from("photos").insert(rows);
+  revalidateMemory(courseId);
+}
+
+/** 여정(장소) 한마디 저장 */
+export async function saveJourneyNote(formData: FormData) {
+  const stopId = String(formData.get("stop_id") ?? "");
+  const courseId = String(formData.get("course_id") ?? "");
+  if (!stopId) return;
+  const memo = String(formData.get("memo") ?? "").trim() || null;
+  await getAdmin().from("stops").update({ memo }).eq("id", stopId);
   revalidateMemory(courseId);
 }
 

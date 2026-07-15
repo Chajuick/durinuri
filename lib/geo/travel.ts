@@ -1,33 +1,30 @@
 import "server-only";
 import type { Stop, Segment, TravelLeg } from "@/lib/types";
+import { timeToMinutes, sortStops, effectiveDate } from "@/lib/stops";
 import { carDurationMin, type Coord } from "./kakao";
 import { transitDuration } from "./odsay";
-
-/** "HH:MM[:SS]" → 자정 이후 분. 없으면 null */
-export function timeToMinutes(t: string | null): number | null {
-  if (!t) return null;
-  const m = /^(\d{1,2}):(\d{2})/.exec(t);
-  if (!m) return null;
-  return Number(m[1]) * 60 + Number(m[2]);
-}
 
 function coordOf(s: Stop): Coord | null {
   if (s.lat == null || s.lng == null) return null;
   return { lat: s.lat, lng: s.lng };
 }
 
-/** 연속한 두 장소 사이의 구간별 이동정보 계산 */
-export async function buildSegments(stops: Stop[]): Promise<Segment[]> {
-  // 시간순 정렬(도착시각 우선, 없으면 입력순) — 표시 순서와 일치
-  const ordered = [...stops].sort((a, b) => {
-    const ta = timeToMinutes(a.arrive_at);
-    const tb = timeToMinutes(b.arrive_at);
-    if (ta == null && tb == null) return a.sort_order - b.sort_order;
-    if (ta == null) return 1;
-    if (tb == null) return -1;
-    return ta - tb;
-  });
-  const pairs = ordered.slice(0, -1).map((from, i) => ({ from, to: ordered[i + 1] }));
+/**
+ * 연속한 두 장소 사이의 구간별 이동정보 계산.
+ * 같은 날의 인접 여정끼리만 계산(날이 바뀌면 이동블록 생략).
+ */
+export async function buildSegments(
+  stops: Stop[],
+  courseDate: string | null = null,
+): Promise<Segment[]> {
+  const ordered = sortStops(stops, courseDate);
+  const pairs = ordered
+    .slice(0, -1)
+    .map((from, i) => ({ from, to: ordered[i + 1] }))
+    .filter(
+      ({ from, to }) =>
+        effectiveDate(from, courseDate) === effectiveDate(to, courseDate),
+    );
 
   return Promise.all(
     pairs.map(async ({ from, to }): Promise<Segment> => {

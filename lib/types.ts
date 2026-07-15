@@ -27,6 +27,7 @@ export interface Stop {
   course_id: string;
   sort_order: number;
   name: string;
+  date: string | null; // 여정 날짜(없으면 코스 날짜)
   place_query: string | null;
   lat: number | null;
   lng: number | null;

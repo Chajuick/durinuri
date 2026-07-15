@@ -5,7 +5,13 @@ import { Plus, X } from "lucide-react";
 import { addStop } from "@/app/plans/actions";
 import { StopFields } from "./stop-row";
 
-export function AddStop({ courseId }: { courseId: string }) {
+export function AddStop({
+  courseId,
+  courseDate,
+}: {
+  courseId: string;
+  courseDate?: string | null;
+}) {
   const [open, setOpen] = useState(false);
 
   if (!open) {
@@ -40,7 +46,7 @@ export function AddStop({ courseId }: { courseId: string }) {
           <X className="size-4" strokeWidth={2} />
         </button>
       </div>
-      <StopFields />
+      <StopFields defaultDate={courseDate} />
       <button
         type="submit"
         className="mt-1 h-10 rounded-sm bg-primary text-sm font-bold text-white shadow-soft"
