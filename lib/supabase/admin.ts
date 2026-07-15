@@ -1,5 +1,6 @@
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
+import { PHOTO_BUCKET } from "@/lib/constants";
 
 /**
  * 서버 전용 Supabase 클라이언트 (service_role).
@@ -24,4 +25,4 @@ export function getAdmin() {
   });
 }
 
-export const PHOTO_BUCKET = "date-photos";
+export { PHOTO_BUCKET };

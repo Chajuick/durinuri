@@ -12,40 +12,45 @@ function revalidateMemory(courseId: string) {
   revalidatePath(`/memories/${courseId}`);
 }
 
-/** 사진 업로드 (여러 장). Supabase Storage → photos 레코드 */
-export async function uploadPhotos(formData: FormData) {
-  const courseId = String(formData.get("course_id") ?? "");
-  if (!courseId) return;
+/**
+ * 1) 업로드 슬롯 생성 — 파일 개수만큼 서명된 업로드 URL을 발급.
+ *    클라이언트가 이 토큰으로 Storage에 직접 올린다(서버/Vercel 크기 제한 우회).
+ */
+export async function prepareUpload(
+  courseId: string,
+  count: number,
+): Promise<{ path: string; token: string }[]> {
+  if (!courseId || count < 1) return [];
+  const admin = getAdmin();
+  const slots: { path: string; token: string }[] = [];
+  for (let i = 0; i < Math.min(count, 20); i++) {
+    const path = `${courseId}/${randomUUID()}.jpg`;
+    const { data, error } = await admin.storage
+      .from(PHOTO_BUCKET)
+      .createSignedUploadUrl(path);
+    if (error || !data) throw new Error("업로드 준비에 실패했어요.");
+    slots.push({ path: data.path, token: data.token });
+  }
+  return slots;
+}
+
+/** 2) 업로드 완료된 파일들을 photos 레코드로 등록 */
+export async function registerPhotos(
+  courseId: string,
+  items: { path: string; caption?: string | null }[],
+) {
+  if (!courseId || items.length === 0) return;
   const session = await getSession();
-  const caption = String(formData.get("caption") ?? "").trim() || null;
-
-  const files = formData
-    .getAll("files")
-    .filter((f): f is File => f instanceof File && f.size > 0);
-  if (files.length === 0) return;
-
   const admin = getAdmin();
 
-  for (const file of files) {
-    const ext = file.name.includes(".") ? file.name.split(".").pop() : "jpg";
-    const path = `${courseId}/${randomUUID()}.${ext}`;
-    const bytes = Buffer.from(await file.arrayBuffer());
-    const { error } = await admin.storage
-      .from(PHOTO_BUCKET)
-      .upload(path, bytes, {
-        contentType: file.type || "image/jpeg",
-        upsert: false,
-      });
-    if (error) continue;
-    const { data } = admin.storage.from(PHOTO_BUCKET).getPublicUrl(path);
-    await admin.from("photos").insert({
-      course_id: courseId,
-      author_id: session?.memberId ?? null,
-      url: data.publicUrl,
-      caption,
-    });
-  }
+  const rows = items.map((it) => ({
+    course_id: courseId,
+    author_id: session?.memberId ?? null,
+    url: admin.storage.from(PHOTO_BUCKET).getPublicUrl(it.path).data.publicUrl,
+    caption: it.caption?.trim() || null,
+  }));
 
+  await admin.from("photos").insert(rows);
   revalidateMemory(courseId);
 }
 

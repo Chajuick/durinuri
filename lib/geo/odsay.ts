@@ -24,7 +24,13 @@ export async function transitDuration(
       `https://api.odsay.com/v1/api/searchPubTransPathT` +
       `?apiKey=${encodeURIComponent(key)}` +
       `&SX=${from.lng}&SY=${from.lat}&EX=${to.lng}&EY=${to.lat}`;
-    const res = await fetch(url, { next: { revalidate: DAY } });
+    // ODsay는 등록된 도메인의 Referer를 검사한다. 서버 호출엔 직접 붙여준다.
+    const referer =
+      process.env.ODSAY_REFERER || "https://durinuri.vercel.app";
+    const res = await fetch(url, {
+      headers: { Referer: referer },
+      next: { revalidate: DAY },
+    });
     if (!res.ok) return null;
     const json = await res.json();
     const info = json?.result?.path?.[0]?.info;
