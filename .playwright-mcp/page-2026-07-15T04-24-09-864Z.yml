@@ -1,0 +1,13 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - heading "우리 데이트" [level=1] [ref=e7]
+      - paragraph [ref=e8]: 공유 비밀번호를 넣고, 이름을 정해줘
+    - generic [ref=e9]:
+      - textbox [ref=e14]:
+        - /placeholder: 공유 비밀번호
+      - textbox [ref=e19]:
+        - /placeholder: "내 이름 (예: 지훈)"
+      - button "들어가기" [ref=e20] [cursor=pointer]
+    - paragraph [ref=e21]: 둘만의 공간이에요. 이름은 나중에 설정에서 바꿀 수 있어요.
+  - alert [ref=e22]

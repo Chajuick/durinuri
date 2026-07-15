@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { ChevronLeft, Check, Trash2, Clock } from "lucide-react";
 import { getCourse, getStops, getMembersMap } from "@/lib/data";
 import { buildSegments } from "@/lib/geo/travel";
+import { ensureCoords } from "@/lib/geo/backfill";
 import { formatDate } from "@/lib/format";
 import { markDone, deleteCourse } from "@/app/plans/actions";
 import { StopRow } from "./stop-row";
@@ -20,7 +21,7 @@ export default async function CourseDetail({
   if (!course) notFound();
   if (course.status === "done") redirect(`/memories/${course.id}`);
 
-  const stops = await getStops(course.id);
+  const stops = await ensureCoords(await getStops(course.id));
   const segments = await buildSegments(stops);
   const members = await getMembersMap();
 

@@ -1,0 +1,42 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e22]
+  - main [ref=e23]:
+    - generic [ref=e24]:
+      - paragraph [ref=e25]: 지훈님, 안녕하세요
+      - heading "우리 데이트" [level=1] [ref=e26]
+    - generic [ref=e27]:
+      - generic [ref=e28]:
+        - heading "다가오는 데이트" [level=2] [ref=e29]
+        - link "전체" [ref=e32] [cursor=pointer]:
+          - /url: /plans
+      - list [ref=e33]:
+        - listitem [ref=e34]:
+          - link "금요일 데이트 7월 17일 (금) · 장소 2 2" [ref=e35] [cursor=pointer]:
+            - /url: /plans/78a054e8-7ee2-4b25-a1ca-d907c7de842d
+            - generic [ref=e36]:
+              - generic [ref=e37]: 금요일 데이트
+              - generic [ref=e38]:
+                - generic [ref=e39]: 7월 17일 (금)
+                - generic [ref=e40]: ·
+                - generic [ref=e41]: 장소 2
+                - generic [ref=e42]: "2"
+        - listitem [ref=e48]:
+          - link "토요일 데이트 7월 18일 (토) · 장소 3 3" [ref=e49] [cursor=pointer]:
+            - /url: /plans/e2ce4bbb-60d9-4eae-b78a-4cd40e0d5a81
+            - generic [ref=e50]:
+              - generic [ref=e51]: 토요일 데이트
+              - generic [ref=e52]:
+                - generic [ref=e53]: 7월 18일 (토)
+                - generic [ref=e54]: ·
+                - generic [ref=e55]: 장소 3
+                - generic [ref=e56]: "3"
+  - navigation [ref=e62]:
+    - generic [ref=e63]:
+      - link "홈" [ref=e64] [cursor=pointer]:
+        - /url: /
+      - link "갈 데이트" [ref=e68] [cursor=pointer]:
+        - /url: /plans
+      - link "간 데이트" [ref=e71] [cursor=pointer]:
+        - /url: /memories
+      - link "설정" [ref=e77] [cursor=pointer]:
+        - /url: /settings

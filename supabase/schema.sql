@@ -98,6 +98,15 @@ alter table stops   enable row level security;
 alter table reviews enable row level security;
 alter table photos  enable row level security;
 
+-- 서버 전용 키(service_role)에만 접근 권한 부여.
+-- (프로젝트 생성 시 "Automatically expose new tables"를 꺼도 서버 접근이 되도록.)
+-- anon/authenticated 에는 권한을 주지 않아 외부 직접 접근은 계속 차단됩니다.
+grant usage on schema public to service_role;
+grant all on all tables in schema public to service_role;
+grant all on all sequences in schema public to service_role;
+alter default privileges in schema public grant all on tables to service_role;
+alter default privileges in schema public grant all on sequences to service_role;
+
 -- ============================================================
 --  Storage 버킷: date-photos (공개 읽기)
 --  아래는 SQL로도 생성 가능하지만, 대시보드 Storage에서
