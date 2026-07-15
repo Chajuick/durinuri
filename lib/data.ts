@@ -27,6 +27,8 @@ export async function getStops(courseId: string): Promise<Stop[]> {
     .from("stops")
     .select("*")
     .eq("course_id", courseId)
+    // 시간순 진행 — 도착시각 우선, 없으면 뒤로(입력순)
+    .order("arrive_at", { ascending: true, nullsFirst: false })
     .order("sort_order", { ascending: true });
   return (data as Stop[]) ?? [];
 }

@@ -18,7 +18,15 @@ function coordOf(s: Stop): Coord | null {
 
 /** 연속한 두 장소 사이의 구간별 이동정보 계산 */
 export async function buildSegments(stops: Stop[]): Promise<Segment[]> {
-  const ordered = [...stops].sort((a, b) => a.sort_order - b.sort_order);
+  // 시간순 정렬(도착시각 우선, 없으면 입력순) — 표시 순서와 일치
+  const ordered = [...stops].sort((a, b) => {
+    const ta = timeToMinutes(a.arrive_at);
+    const tb = timeToMinutes(b.arrive_at);
+    if (ta == null && tb == null) return a.sort_order - b.sort_order;
+    if (ta == null) return 1;
+    if (tb == null) return -1;
+    return ta - tb;
+  });
   const pairs = ordered.slice(0, -1).map((from, i) => ({ from, to: ordered[i + 1] }));
 
   return Promise.all(

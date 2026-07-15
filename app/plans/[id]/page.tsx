@@ -26,7 +26,6 @@ export default async function CourseDetail({
   const members = await getMembersMap();
 
   const segByFrom = new Map(segments.map((s) => [s.fromStopId, s]));
-  const allIds = stops.map((s) => s.id);
   const editorName = course.updated_by ? members[course.updated_by]?.name : null;
 
   return (
@@ -57,12 +56,7 @@ export default async function CourseDetail({
           const seg = segByFrom.get(stop.id);
           return (
             <div key={stop.id} className="flex flex-col">
-              <StopRow
-                stop={stop}
-                index={i}
-                allIds={allIds}
-                courseId={course.id}
-              />
+              <StopRow stop={stop} courseId={course.id} />
               {seg && i < stops.length - 1 && <TravelBlock segment={seg} />}
             </div>
           );

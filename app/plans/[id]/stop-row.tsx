@@ -1,41 +1,19 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import {
-  MapPin,
-  BookmarkCheck,
-  Pencil,
-  Trash2,
-  ChevronUp,
-  ChevronDown,
-  X,
-} from "lucide-react";
+import { useState } from "react";
+import { MapPin, BookmarkCheck, Pencil, Trash2, X } from "lucide-react";
 import type { Stop } from "@/lib/types";
 import { formatTime } from "@/lib/format";
-import { updateStop, deleteStop, reorderStops } from "@/app/plans/actions";
+import { updateStop, deleteStop } from "@/app/plans/actions";
 
 export function StopRow({
   stop,
-  index,
-  allIds,
   courseId,
 }: {
   stop: Stop;
-  index: number;
-  allIds: string[];
   courseId: string;
 }) {
   const [editing, setEditing] = useState(false);
-  const [pending, startTransition] = useTransition();
-  const total = allIds.length;
-
-  function move(dir: -1 | 1) {
-    const target = index + dir;
-    if (target < 0 || target >= total) return;
-    const next = [...allIds];
-    [next[index], next[target]] = [next[target], next[index]];
-    startTransition(() => reorderStops(courseId, next));
-  }
 
   return (
     <div className="rounded-md border border-border bg-surface shadow-soft">
@@ -52,22 +30,6 @@ export function StopRow({
             <span className="tnum mr-1 text-[15px] font-extrabold">
               {formatTime(stop.arrive_at) || "--:--"}
             </span>
-            <button
-              onClick={() => move(-1)}
-              disabled={index === 0 || pending}
-              aria-label="위로"
-              className="grid size-7 place-items-center rounded-sm text-text-faint disabled:opacity-30"
-            >
-              <ChevronUp className="size-4" strokeWidth={2} />
-            </button>
-            <button
-              onClick={() => move(1)}
-              disabled={index === total - 1 || pending}
-              aria-label="아래로"
-              className="grid size-7 place-items-center rounded-sm text-text-faint disabled:opacity-30"
-            >
-              <ChevronDown className="size-4" strokeWidth={2} />
-            </button>
             <button
               onClick={() => setEditing(true)}
               aria-label="수정"
