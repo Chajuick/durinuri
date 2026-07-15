@@ -2,8 +2,13 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "우리 데이트",
+  title: "두리누리 · 우리 데이트",
   description: "둘이 함께 계획하고 기억하는 데이트 기록",
+  appleWebApp: {
+    capable: true,
+    title: "두리누리",
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {
