@@ -44,6 +44,29 @@ export async function renameMember(
   return { ok: true };
 }
 
+export interface SinceState {
+  ok?: boolean;
+  error?: string;
+}
+
+export async function updateSince(
+  _prev: SinceState,
+  formData: FormData,
+): Promise<SinceState> {
+  const session = await getSession();
+  if (!session) redirect("/login");
+
+  const since = String(formData.get("since_date") ?? "") || null;
+  const { error } = await getAdmin()
+    .from("app_settings")
+    .update({ since_date: since })
+    .eq("id", 1);
+  if (error) return { error: "저장 중 문제가 생겼어요." };
+
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
 export async function logout() {
   cookies().delete(SESSION_COOKIE);
   redirect("/login");

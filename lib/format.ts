@@ -21,6 +21,21 @@ export function formatMinutes(min: number | null | undefined): string {
   return `${h}시간 ${m}분`;
 }
 
+/**
+ * 만난 시작일 기준 D-day 문자열.
+ * 한국식: 시작일 당일이 D+1. 미래 날짜면 D-N.
+ */
+export function ddayLabel(since: string | null): string | null {
+  const m = since && /^(\d{4})-(\d{2})-(\d{2})/.exec(since);
+  if (!m) return null;
+  const start = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diff = Math.round((today.getTime() - start.getTime()) / 86400000);
+  if (diff >= 0) return `D+${diff + 1}`;
+  return `D${diff}`;
+}
+
 /** 이름 + 조사(이/가) — 받침 있으면 '이', 없으면 '가' */
 export function withIga(name: string): string {
   const last = name.trim().slice(-1);

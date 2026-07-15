@@ -13,6 +13,16 @@ create table if not exists members (
   created_at  timestamptz not null default now()
 );
 
+-- 커플 공용 설정 (단일 행: D-day 만난 시작일 등)
+create table if not exists app_settings (
+  id          int primary key default 1,
+  since_date  date,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now(),
+  constraint app_settings_single check (id = 1)
+);
+insert into app_settings (id) values (1) on conflict (id) do nothing;
+
 -- 코스 = 하루 데이트
 create table if not exists courses (
   id          uuid primary key default gen_random_uuid(),
@@ -88,11 +98,16 @@ drop trigger if exists trg_reviews_updated on reviews;
 create trigger trg_reviews_updated before update on reviews
   for each row execute function set_updated_at();
 
+drop trigger if exists trg_settings_updated on app_settings;
+create trigger trg_settings_updated before update on app_settings
+  for each row execute function set_updated_at();
+
 -- ============================================================
 --  RLS: 켜되 공개 정책 없음 → anon/authenticated 직접 접근 차단.
 --  서버에서 service_role 키로만 접근(서비스 롤은 RLS 우회).
 -- ============================================================
-alter table members enable row level security;
+alter table members      enable row level security;
+alter table app_settings enable row level security;
 alter table courses enable row level security;
 alter table stops   enable row level security;
 alter table reviews enable row level security;

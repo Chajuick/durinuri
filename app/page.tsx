@@ -5,20 +5,23 @@ import {
   Camera,
   Plus,
   BookmarkCheck,
+  Heart,
 } from "lucide-react";
-import { getCourses, getStops, getPhotos } from "@/lib/data";
+import { getCourses, getStops, getPhotos, getSinceDate } from "@/lib/data";
 import { getSession } from "@/lib/auth";
-import { formatDate } from "@/lib/format";
+import { formatDate, ddayLabel } from "@/lib/format";
 import { BottomNav } from "@/components/BottomNav";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [session, planned, done] = await Promise.all([
+  const [session, planned, done, since] = await Promise.all([
     getSession(),
     getCourses("planned"),
     getCourses("done"),
+    getSinceDate(),
   ]);
+  const dday = ddayLabel(since);
 
   const upcoming = await Promise.all(
     planned.slice(0, 3).map(async (c) => ({
@@ -36,13 +39,21 @@ export default async function Home() {
   return (
     <>
       <main className="mx-auto max-w-md px-5 pb-28 pt-9">
-        <header className="mb-7">
-          <p className="text-sm font-semibold text-text-sub">
-            {session?.name ? `${session.name}님, 안녕하세요` : "안녕하세요"}
-          </p>
-          <h1 className="mt-0.5 text-2xl font-extrabold tracking-tight">
-            우리 데이트
-          </h1>
+        <header className="mb-7 flex items-end justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-text-sub">
+              {session?.name ? `${session.name}님, 안녕하세요` : "안녕하세요"}
+            </p>
+            <h1 className="mt-0.5 text-2xl font-extrabold tracking-tight">
+              우리 데이트
+            </h1>
+          </div>
+          {dday && (
+            <div className="flex items-center gap-1.5 rounded-full bg-primary-bg px-3.5 py-2 text-primary-ink">
+              <Heart className="size-4" strokeWidth={2} fill="currentColor" />
+              <span className="tnum text-[15px] font-extrabold">{dday}</span>
+            </div>
+          )}
         </header>
 
         {/* 다가오는 데이트 */}

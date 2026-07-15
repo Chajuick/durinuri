@@ -48,6 +48,15 @@ export async function getPhotos(courseId: string): Promise<Photo[]> {
   return (data as Photo[]) ?? [];
 }
 
+export async function getSinceDate(): Promise<string | null> {
+  const { data } = await getAdmin()
+    .from("app_settings")
+    .select("since_date")
+    .eq("id", 1)
+    .maybeSingle();
+  return (data?.since_date as string) ?? null;
+}
+
 export async function getMembersMap(): Promise<Record<string, Member>> {
   const { data } = await getAdmin().from("members").select("*");
   const map: Record<string, Member> = {};
