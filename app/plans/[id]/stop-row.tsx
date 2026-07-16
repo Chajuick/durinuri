@@ -14,7 +14,12 @@ import {
 import type { Stop } from "@/lib/types";
 import type { PlaceHit } from "@/lib/geo/kakao";
 import { formatTime } from "@/lib/format";
-import { updateStop, deleteStop, searchPlacesAction } from "@/app/plans/actions";
+import {
+  updateStop,
+  deleteStop,
+  searchPlacesAction,
+  geocodeAddressAction,
+} from "@/app/plans/actions";
 import { NaverMapLink } from "@/components/NaverMapLink";
 
 export function StopRow({
@@ -143,6 +148,37 @@ export function StopFields({
     setTerm("");
   }
 
+  // 주소로 직접 매칭 (장소검색이 안 될 때)
+  const [addrOpen, setAddrOpen] = useState(false);
+  const [addrTerm, setAddrTerm] = useState("");
+  const [addrBusy, setAddrBusy] = useState(false);
+  const [addrErr, setAddrErr] = useState(false);
+
+  async function runAddress() {
+    const a = addrTerm.trim();
+    if (!a || addrBusy) return;
+    setAddrBusy(true);
+    setAddrErr(false);
+    try {
+      const r = await geocodeAddressAction(a);
+      if (r) {
+        setCoord({ lat: r.lat, lng: r.lng });
+        setPickedLabel(r.address);
+        if (!name.trim()) setName(a);
+        setResults([]);
+        setSearched(false);
+        setAddrOpen(false);
+        setAddrTerm("");
+      } else {
+        setAddrErr(true);
+      }
+    } catch {
+      setAddrErr(true);
+    } finally {
+      setAddrBusy(false);
+    }
+  }
+
   return (
     <>
       {/* 장소 검색 */}
@@ -206,9 +242,56 @@ export function StopFields({
         )}
         {searched && !searching && results.length === 0 && (
           <p className="px-1 text-[12px] text-text-faint">
-            결과가 없어요. 이름을 바꿔 검색하거나 아래에 직접 입력해줘.
+            검색 결과가 없어요. 주소로 직접 넣어볼까?
           </p>
         )}
+
+        {/* 주소로 직접 매칭 */}
+        <div className="border-t border-border pt-2">
+          {!addrOpen ? (
+            <button
+              type="button"
+              onClick={() => setAddrOpen(true)}
+              className="text-[12px] font-semibold text-primary-ink"
+            >
+              검색이 안 되면 · 주소로 직접 넣기
+            </button>
+          ) : (
+            <div className="flex flex-col gap-1.5">
+              <div className="flex gap-1.5">
+                <input
+                  value={addrTerm}
+                  onChange={(e) => setAddrTerm(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      runAddress();
+                    }
+                  }}
+                  placeholder="도로명·지번 주소 (예: 서울 중구 마른내로 34)"
+                  className="h-10 flex-1 rounded-sm border border-border bg-bg px-3 text-[13px] outline-none focus:border-primary"
+                />
+                <button
+                  type="button"
+                  onClick={runAddress}
+                  disabled={addrBusy || !addrTerm.trim()}
+                  className="grid h-10 w-14 shrink-0 place-items-center rounded-sm bg-primary text-[13px] font-bold text-white disabled:opacity-50"
+                >
+                  {addrBusy ? (
+                    <Loader2 className="size-4 animate-spin" strokeWidth={2} />
+                  ) : (
+                    "확인"
+                  )}
+                </button>
+              </div>
+              {addrErr && (
+                <p className="px-1 text-[12px] font-semibold text-danger">
+                  그 주소를 못 찾았어. 도로명·지번을 확인해줘.
+                </p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       <input

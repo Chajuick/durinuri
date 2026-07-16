@@ -47,6 +47,32 @@ export async function searchPlaces(query: string): Promise<PlaceHit[]> {
   }
 }
 
+/** 주소 문자열 → 좌표 (카카오 주소 검색). 장소검색이 안 될 때 직접 매칭용 */
+export async function geocodeAddress(
+  address: string,
+): Promise<{ lat: number; lng: number; address: string } | null> {
+  const key = process.env.KAKAO_REST_KEY;
+  if (!key || !address.trim()) return null;
+  try {
+    const res = await fetch(
+      `https://dapi.kakao.com/v2/local/search/address.json?size=1&query=${encodeURIComponent(
+        address,
+      )}`,
+      { headers: { Authorization: `KakaoAK ${key}` }, cache: "no-store" },
+    );
+    if (!res.ok) return null;
+    const json = await res.json();
+    const doc = json?.documents?.[0];
+    if (!doc) return null;
+    const lat = Number(doc.y);
+    const lng = Number(doc.x);
+    if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
+    return { lat, lng, address: doc.address_name };
+  } catch {
+    return null;
+  }
+}
+
 /** 장소명 → 좌표 (카카오 키워드 검색). 결과 없으면 null */
 export async function geocodePlace(query: string): Promise<Coord | null> {
   const key = process.env.KAKAO_REST_KEY;

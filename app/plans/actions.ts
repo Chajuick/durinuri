@@ -4,11 +4,23 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getAdmin } from "@/lib/supabase/admin";
 import { getSession } from "@/lib/auth";
-import { geocodePlace, searchPlaces, type PlaceHit } from "@/lib/geo/kakao";
+import {
+  geocodePlace,
+  geocodeAddress,
+  searchPlaces,
+  type PlaceHit,
+} from "@/lib/geo/kakao";
 
 /** 장소 검색 (add/edit 폼의 후보 목록용) */
 export async function searchPlacesAction(query: string): Promise<PlaceHit[]> {
   return searchPlaces(query);
+}
+
+/** 주소로 직접 좌표 찾기 (장소검색이 안 될 때) */
+export async function geocodeAddressAction(
+  address: string,
+): Promise<{ lat: number; lng: number; address: string } | null> {
+  return geocodeAddress(address);
 }
 
 /** 폼에서 선택한 좌표(lat/lng)를 파싱. 없으면 null */
