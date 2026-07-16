@@ -78,6 +78,18 @@ export async function saveStopReview(formData: FormData) {
   revalidateMemory(courseId);
 }
 
+/** 사진 캡션 수정 (업로드 후에도 편집 가능) */
+export async function updatePhotoCaption(
+  photoId: string,
+  courseId: string,
+  caption: string,
+) {
+  if (!photoId) return;
+  const value = caption.trim() || null;
+  await getAdmin().from("photos").update({ caption: value }).eq("id", photoId);
+  revalidateMemory(courseId);
+}
+
 export async function deletePhoto(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const courseId = String(formData.get("course_id") ?? "");

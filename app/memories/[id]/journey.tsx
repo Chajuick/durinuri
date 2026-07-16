@@ -10,6 +10,7 @@ import { updateStop, deleteStop } from "@/app/plans/actions";
 import { StopFields } from "@/app/plans/[id]/stop-row";
 import { NaverMapLink } from "@/components/NaverMapLink";
 import { PhotoUploader } from "./photos";
+import { PhotoCaption } from "./photo-caption";
 
 export function JourneyMemory({
   stop,
@@ -139,6 +140,13 @@ export function JourneyMemory({
                       <Trash2 className="size-3" strokeWidth={2} />
                     </button>
                   </form>
+                  <div className="border-t border-border">
+                    <PhotoCaption
+                      photoId={p.id}
+                      courseId={courseId}
+                      initial={p.caption}
+                    />
+                  </div>
                 </div>
               );
             })}

@@ -24,6 +24,7 @@ import { deletePhoto, markPlanned } from "@/app/memories/actions";
 import { ReviewForm } from "./review-form";
 import { JourneyMemory } from "./journey";
 import { PhotoUploader } from "./photos";
+import { PhotoCaption } from "./photo-caption";
 import { MemoryView } from "./view";
 import { ViewEditToggle } from "./view-edit-toggle";
 import { AddStop } from "@/app/plans/[id]/add-stop";
@@ -199,6 +200,13 @@ export default async function MemoryDetail({
                         <Trash2 className="size-3" strokeWidth={2} />
                       </button>
                     </form>
+                    <div className="border-t border-border">
+                      <PhotoCaption
+                        photoId={p.id}
+                        courseId={course.id}
+                        initial={p.caption}
+                      />
+                    </div>
                   </div>
                 );
               })}
