@@ -1,8 +1,17 @@
 "use client";
 
 import { useFormState, useFormStatus } from "react-dom";
-import { Calendar, Lock, User, AlertTriangle } from "lucide-react";
+import { Lock, User, AlertTriangle } from "lucide-react";
 import { login, type LoginState } from "./actions";
+
+// 히어로 위로 간헐적으로 떠오르는 하트들 (고정값 → SSR 안정)
+const HEARTS = [
+  { left: "50%", delay: "0s", dur: "3.6s" },
+  { left: "42%", delay: "0.9s", dur: "4.1s" },
+  { left: "58%", delay: "1.5s", dur: "3.3s" },
+  { left: "47%", delay: "2.3s", dur: "3.9s" },
+  { left: "54%", delay: "3.1s", dur: "3.5s" },
+];
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -22,13 +31,58 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6">
-      <div className="mb-8 flex flex-col items-center text-center">
-        <div className="mb-4 flex size-16 items-center justify-center rounded-md bg-primary text-white shadow-soft">
-          <Calendar className="size-8" strokeWidth={1.75} />
+      <div className="mb-9 flex flex-col items-center text-center">
+        {/* 분홍·하늘 슬라임이 붙었다 떨어지며 하트가 뿅뿅 */}
+        <div className="slimeScene" aria-hidden="true">
+          <svg
+            width="0"
+            height="0"
+            className="absolute"
+            style={{ position: "absolute" }}
+          >
+            <defs>
+              <filter id="slimeGoo">
+                <feGaussianBlur
+                  in="SourceGraphic"
+                  stdDeviation="7"
+                  result="blur"
+                />
+                <feColorMatrix
+                  in="blur"
+                  mode="matrix"
+                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -8"
+                  result="goo"
+                />
+                <feBlend in="SourceGraphic" in2="goo" />
+              </filter>
+            </defs>
+          </svg>
+
+          <div className="slimeBlobs">
+            <span className="slimeBlob pink" />
+            <span className="slimeBlob sky" />
+          </div>
+
+          <div className="slimeHearts">
+            {HEARTS.map((h, i) => (
+              <span
+                key={i}
+                className="slimeHeart"
+                style={{
+                  left: h.left,
+                  animationDelay: h.delay,
+                  animationDuration: h.dur,
+                }}
+              >
+                <span className="slimeHeartShape" />
+              </span>
+            ))}
+          </div>
         </div>
-        <h1 className="text-2xl font-extrabold tracking-tight">우리 데이트</h1>
-        <p className="mt-2 text-sm text-text-sub">
-          공유 비밀번호를 넣고, 이름을 정해줘
+
+        <h1 className="text-[30px] font-extrabold tracking-tight">두리누리</h1>
+        <p className="mt-1.5 text-[14px] text-text-sub">
+          둘이 함께 계획하고 기억하는 데이트
         </p>
       </div>
 
