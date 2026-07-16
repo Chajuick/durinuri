@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Plus, Images, Camera, MessageSquareText } from "lucide-react";
+import { Plus, Camera, MessageSquareText } from "lucide-react";
 import { getCourses, getPhotos, getReviews } from "@/lib/data";
 import { formatDate } from "@/lib/format";
 import { BottomNav } from "@/components/BottomNav";
+import { SlimePair } from "@/components/PixelSlime";
 
 export const dynamic = "force-dynamic";
 
@@ -32,8 +33,8 @@ export default async function MemoriesPage() {
         </div>
 
         {cards.length === 0 ? (
-          <div className="mt-16 flex flex-col items-center gap-3 text-center">
-            <Images className="size-10 text-text-faint" strokeWidth={1.5} />
+          <div className="mt-16 flex flex-col items-center gap-4 text-center">
+            <SlimePair width={52} />
             <p className="text-text-sub">아직 기록한 추억이 없어요</p>
           </div>
         ) : (

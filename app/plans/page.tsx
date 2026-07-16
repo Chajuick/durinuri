@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Plus, ChevronRight, CalendarDays, BookmarkCheck } from "lucide-react";
+import { Plus, ChevronRight, BookmarkCheck } from "lucide-react";
 import { getCourses, getStops } from "@/lib/data";
 import { formatDate } from "@/lib/format";
 import { BottomNav } from "@/components/BottomNav";
+import { SlimePair } from "@/components/PixelSlime";
 
 export const dynamic = "force-dynamic";
 
@@ -26,8 +27,8 @@ export default async function PlansPage() {
         </div>
 
         {withStops.length === 0 ? (
-          <div className="mt-16 flex flex-col items-center gap-3 text-center">
-            <CalendarDays className="size-10 text-text-faint" strokeWidth={1.5} />
+          <div className="mt-16 flex flex-col items-center gap-4 text-center">
+            <SlimePair width={52} />
             <p className="text-text-sub">아직 예정된 데이트가 없어요</p>
             <Link
               href="/new?status=planned"

@@ -3,85 +3,8 @@
 import type { CSSProperties } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { Lock, User, AlertTriangle } from "lucide-react";
+import { PixelSlime } from "@/components/PixelSlime";
 import { login, type LoginState } from "./actions";
-
-// 슬라임 실루엣 (15 x 12 픽셀)
-const BODY = [
-  ".....#####.....",
-  "...#########...",
-  "..###########..",
-  ".#############.",
-  ".#############.",
-  "###############",
-  "###############",
-  "###############",
-  "###############",
-  "###############",
-  ".#############.",
-  "..###########..",
-];
-const EYES = [
-  [4, 5],
-  [5, 5],
-  [4, 6],
-  [5, 6],
-  [9, 5],
-  [10, 5],
-  [9, 6],
-  [10, 6],
-];
-const SHINE = [
-  [4, 5],
-  [9, 5],
-];
-const CHEEKS = [
-  [2, 7],
-  [3, 7],
-  [11, 7],
-  [12, 7],
-];
-const HILITE = [
-  [3, 2],
-  [4, 2],
-  [5, 2],
-  [2, 3],
-];
-
-const SKINS = {
-  coral: { body: "#f0806a", shade: "#d3694f", hi: "#f8a892" },
-  sky: { body: "#6bb8f2", shade: "#4b97d4", hi: "#a6d6f8" },
-};
-
-function PixelSlime({
-  variant,
-  bounceLate,
-}: {
-  variant: keyof typeof SKINS;
-  bounceLate?: boolean;
-}) {
-  const { body, shade, hi } = SKINS[variant];
-  const px = new Map<string, string>();
-  BODY.forEach((row, y) =>
-    [...row].forEach((c, x) => {
-      if (c === "#") px.set(`${x},${y}`, y >= 10 ? shade : body);
-    }),
-  );
-  HILITE.forEach(([x, y]) => px.set(`${x},${y}`, hi));
-  CHEEKS.forEach(([x, y]) => px.set(`${x},${y}`, "#ff7d9a"));
-  EYES.forEach(([x, y]) => px.set(`${x},${y}`, "#3a2b29"));
-  SHINE.forEach(([x, y]) => px.set(`${x},${y}`, "#ffffff"));
-
-  return (
-    <div className={`pxSlime${bounceLate ? " b" : ""}`}>
-      <svg viewBox="0 0 15 12" className="pxImg" shapeRendering="crispEdges">
-        {[...px].map(([k, c]) => {
-          const [x, y] = k.split(",").map(Number);
-          return <rect key={k} x={x} y={y} width="1" height="1" fill={c} />;
-        })}
-      </svg>
-    </div>
-  );
-}
 
 // 픽셀 하트 (7 x 6)
 const HEART = [".##.##.", "#######", "#######", ".#####.", "..###..", "...#..."];
