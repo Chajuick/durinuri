@@ -50,10 +50,12 @@ export function PixelSlime({
   variant,
   bounceLate,
   width,
+  still,
 }: {
   variant: keyof typeof SLIME_SKINS;
   bounceLate?: boolean;
   width?: number;
+  still?: boolean;
 }) {
   const { body, shade, hi } = SLIME_SKINS[variant];
   const px = new Map<string, string>();
@@ -68,7 +70,7 @@ export function PixelSlime({
   SHINE.forEach(([x, y]) => px.set(`${x},${y}`, "#ffffff"));
 
   return (
-    <div className={`pxSlime${bounceLate ? " b" : ""}`}>
+    <div className={still ? "" : `pxSlime${bounceLate ? " b" : ""}`}>
       <svg
         viewBox="0 0 15 12"
         className="pxImg"
@@ -84,12 +86,18 @@ export function PixelSlime({
   );
 }
 
-/** 코랄+하늘 슬라임 둘이 번갈아 통통 튐 */
-export function SlimePair({ width }: { width?: number }) {
+/** 코랄+하늘 슬라임 둘 (기본은 번갈아 통통 튐, still이면 정지) */
+export function SlimePair({
+  width,
+  still,
+}: {
+  width?: number;
+  still?: boolean;
+}) {
   return (
     <div className="pxStage">
-      <PixelSlime variant="coral" width={width} />
-      <PixelSlime variant="sky" bounceLate width={width} />
+      <PixelSlime variant="coral" width={width} still={still} />
+      <PixelSlime variant="sky" bounceLate width={width} still={still} />
     </div>
   );
 }

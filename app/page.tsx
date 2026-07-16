@@ -11,6 +11,7 @@ import { getCourses, getStops, getPhotos, getSinceDate } from "@/lib/data";
 import { getSession } from "@/lib/auth";
 import { formatDate, ddayLabel } from "@/lib/format";
 import { BottomNav } from "@/components/BottomNav";
+import { SlimePair } from "@/components/PixelSlime";
 
 export const dynamic = "force-dynamic";
 
@@ -149,7 +150,7 @@ export default async function Home() {
                         />
                       ) : (
                         <div className="flex size-full items-center justify-center bg-[linear-gradient(135deg,#F6B89E,#EF8E86_45%,#D98AA6)]">
-                          <Camera className="size-7 text-white/90" strokeWidth={1.5} />
+                          <SlimePair width={38} still />
                         </div>
                       )}
                     </div>

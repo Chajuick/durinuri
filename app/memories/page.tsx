@@ -58,7 +58,7 @@ export default async function MemoriesPage() {
                         />
                       ) : (
                         <div className="flex size-full items-center justify-center bg-[linear-gradient(135deg,#F6B89E,#EF8E86_45%,#D98AA6)]">
-                          <Camera className="size-9 text-white/90" strokeWidth={1.5} />
+                          <SlimePair width={44} still />
                         </div>
                       )}
                     </div>
