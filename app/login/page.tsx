@@ -1,7 +1,8 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useFormState, useFormStatus } from "react-dom";
-import { Lock, User, AlertTriangle, Heart } from "lucide-react";
+import { Lock, User, AlertTriangle } from "lucide-react";
 import { login, type LoginState } from "./actions";
 
 // 슬라임 실루엣 (15 x 12 픽셀)
@@ -39,11 +40,6 @@ const CHEEKS = [
   [11, 7],
   [12, 7],
 ];
-const MOUTH = [
-  [6, 8],
-  [8, 8],
-  [7, 9],
-];
 const HILITE = [
   [3, 2],
   [4, 2],
@@ -72,7 +68,6 @@ function PixelSlime({
   );
   HILITE.forEach(([x, y]) => px.set(`${x},${y}`, hi));
   CHEEKS.forEach(([x, y]) => px.set(`${x},${y}`, "#ff7d9a"));
-  MOUTH.forEach(([x, y]) => px.set(`${x},${y}`, "#5b3b39"));
   EYES.forEach(([x, y]) => px.set(`${x},${y}`, "#3a2b29"));
   SHINE.forEach(([x, y]) => px.set(`${x},${y}`, "#ffffff"));
 
@@ -88,11 +83,39 @@ function PixelSlime({
   );
 }
 
-// 슬라임 사이로 은은하게 떠오르는 미니 하트
-const MINIS = [
-  { left: "50%", size: 12, delay: "0s", dur: "4.6s" },
-  { left: "42%", size: 9, delay: "1.7s", dur: "5.2s" },
-  { left: "58%", size: 10, delay: "3.1s", dur: "4.9s" },
+// 픽셀 하트 (7 x 6)
+const HEART = [".##.##.", "#######", "#######", ".#####.", "..###..", "...#..."];
+
+function PixelHeart({ style }: { style: CSSProperties }) {
+  return (
+    <span className="pxHeart" style={style}>
+      <svg viewBox="0 0 7 6" shapeRendering="crispEdges">
+        {HEART.flatMap((row, y) =>
+          [...row].map((c, x) =>
+            c === "#" ? (
+              <rect
+                key={`${x},${y}`}
+                x={x}
+                y={y}
+                width="1"
+                height="1"
+                fill={x === 1 && y === 1 ? "#ffa7b8" : "#ff5f7a"}
+              />
+            ) : null,
+          ),
+        )}
+      </svg>
+    </span>
+  );
+}
+
+// 슬라임 주변에서 스멀스멀 올라오는 픽셀 하트들
+const HEARTS = [
+  { left: "48%", bottom: "36%", w: 14, delay: "0s", dur: "5.4s" },
+  { left: "30%", bottom: "42%", w: 10, delay: "1.3s", dur: "6.2s" },
+  { left: "66%", bottom: "44%", w: 11, delay: "2.5s", dur: "5.7s" },
+  { left: "54%", bottom: "32%", w: 9, delay: "3.6s", dur: "6.5s" },
+  { left: "38%", bottom: "38%", w: 12, delay: "4.6s", dur: "5.2s" },
 ];
 
 function SubmitButton() {
@@ -132,18 +155,16 @@ export default function LoginPage() {
             <PixelSlime variant="sky" bounceLate />
           </div>
           <div className="duMinis">
-            {MINIS.map((m, i) => (
-              <Heart
+            {HEARTS.map((h, i) => (
+              <PixelHeart
                 key={i}
-                className="duMini"
-                fill="currentColor"
-                strokeWidth={0}
                 style={{
-                  left: m.left,
-                  width: m.size,
-                  height: m.size,
-                  animationDelay: m.delay,
-                  animationDuration: m.dur,
+                  left: h.left,
+                  bottom: h.bottom,
+                  width: h.w,
+                  height: Math.round((h.w * 6) / 7),
+                  animationDelay: h.delay,
+                  animationDuration: h.dur,
                 }}
               />
             ))}
