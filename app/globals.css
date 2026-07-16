@@ -1,4 +1,5 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css");
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Gaegu:wght@400;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -9,6 +10,8 @@
   --font-sans: "Pretendard Variable", "Pretendard", -apple-system,
     BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI",
     sans-serif;
+  /* 손글씨(보기 모드 감성) */
+  --font-hand: "Nanum Pen Script", "Gaegu", var(--font-sans);
 
   --bg: #fbf8f6;
   --surface: #ffffff;

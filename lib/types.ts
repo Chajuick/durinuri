@@ -47,6 +47,15 @@ export interface Review {
   updated_at: string;
 }
 
+export interface StopReview {
+  id: string;
+  stop_id: string;
+  author_id: string;
+  comment: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Photo {
   id: string;
   course_id: string;

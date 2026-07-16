@@ -30,6 +30,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
+        hand: ["var(--font-hand)"],
       },
       borderRadius: {
         sm: "10px",

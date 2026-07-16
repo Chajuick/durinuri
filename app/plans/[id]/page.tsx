@@ -71,7 +71,10 @@ export default async function CourseDetail({
           </p>
         )}
         {days.map((day, di) => (
-          <div key={day.date ?? "nodate"} className="flex flex-col">
+          <div
+            key={day.date ?? "nodate"}
+            className={`flex flex-col ${di > 0 ? "mt-9" : ""}`}
+          >
             {multiDay && (
               <DayHeader
                 date={day.date}

@@ -56,13 +56,25 @@ export async function registerPhotos(
   revalidateMemory(courseId);
 }
 
-/** 여정(장소) 한마디 저장 */
-export async function saveJourneyNote(formData: FormData) {
+/** 여정별 내 코멘트 저장 (사람당 여정별 1개 upsert) */
+export async function saveStopReview(formData: FormData) {
   const stopId = String(formData.get("stop_id") ?? "");
   const courseId = String(formData.get("course_id") ?? "");
-  if (!stopId) return;
-  const memo = String(formData.get("memo") ?? "").trim() || null;
-  await getAdmin().from("stops").update({ memo }).eq("id", stopId);
+  const session = await getSession();
+  if (!stopId || !session) return;
+
+  const comment = String(formData.get("comment") ?? "").trim() || null;
+
+  await getAdmin()
+    .from("stop_reviews")
+    .upsert(
+      {
+        stop_id: stopId,
+        author_id: session.memberId,
+        comment,
+      },
+      { onConflict: "stop_id,author_id" },
+    );
   revalidateMemory(courseId);
 }
 

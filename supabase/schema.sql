@@ -65,6 +65,17 @@ create table if not exists reviews (
   unique (course_id, author_id)
 );
 
+-- 여정별 코멘트 = 여정(장소)마다 서로 각자 한마디 (별점 없음)
+create table if not exists stop_reviews (
+  id          uuid primary key default gen_random_uuid(),
+  stop_id     uuid not null references stops(id) on delete cascade,
+  author_id   uuid not null references members(id) on delete cascade,
+  comment     text,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now(),
+  unique (stop_id, author_id)
+);
+
 -- 사진 = 서로 업로드
 create table if not exists photos (
   id          uuid primary key default gen_random_uuid(),
@@ -80,6 +91,7 @@ create table if not exists photos (
 -- 인덱스
 create index if not exists idx_stops_course   on stops(course_id, sort_order);
 create index if not exists idx_reviews_course on reviews(course_id);
+create index if not exists idx_stop_reviews_stop on stop_reviews(stop_id);
 create index if not exists idx_photos_course  on photos(course_id, created_at);
 create index if not exists idx_courses_status on courses(status, date);
 
@@ -99,6 +111,10 @@ drop trigger if exists trg_reviews_updated on reviews;
 create trigger trg_reviews_updated before update on reviews
   for each row execute function set_updated_at();
 
+drop trigger if exists trg_stop_reviews_updated on stop_reviews;
+create trigger trg_stop_reviews_updated before update on stop_reviews
+  for each row execute function set_updated_at();
+
 drop trigger if exists trg_settings_updated on app_settings;
 create trigger trg_settings_updated before update on app_settings
   for each row execute function set_updated_at();
@@ -112,6 +128,7 @@ alter table app_settings enable row level security;
 alter table courses enable row level security;
 alter table stops   enable row level security;
 alter table reviews enable row level security;
+alter table stop_reviews enable row level security;
 alter table photos  enable row level security;
 
 -- 서버 전용 키(service_role)에만 접근 권한 부여.

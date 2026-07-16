@@ -1,6 +1,14 @@
 import "server-only";
 import { getAdmin } from "./supabase/admin";
-import type { Course, CourseStatus, Stop, Review, Photo, Member } from "./types";
+import type {
+  Course,
+  CourseStatus,
+  Stop,
+  Review,
+  StopReview,
+  Photo,
+  Member,
+} from "./types";
 
 export async function getCourses(status?: CourseStatus): Promise<Course[]> {
   let q = getAdmin()
@@ -40,6 +48,21 @@ export async function getReviews(courseId: string): Promise<Review[]> {
     .select("*")
     .eq("course_id", courseId);
   return (data as Review[]) ?? [];
+}
+
+export async function getStopReviews(courseId: string): Promise<StopReview[]> {
+  const admin = getAdmin();
+  const { data: stopRows } = await admin
+    .from("stops")
+    .select("id")
+    .eq("course_id", courseId);
+  const ids = (stopRows as { id: string }[] | null)?.map((s) => s.id) ?? [];
+  if (ids.length === 0) return [];
+  const { data } = await admin
+    .from("stop_reviews")
+    .select("*")
+    .in("stop_id", ids);
+  return (data as StopReview[]) ?? [];
 }
 
 export async function getPhotos(courseId: string): Promise<Photo[]> {

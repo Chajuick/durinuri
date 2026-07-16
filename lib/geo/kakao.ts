@@ -7,6 +7,46 @@ export interface Coord {
 
 const DAY = 60 * 60 * 24;
 
+export interface PlaceHit {
+  id: string;
+  name: string;
+  address: string;
+  roadAddress: string | null;
+  category: string | null;
+  lat: number;
+  lng: number;
+}
+
+/** 장소명 → 후보 목록 (카카오 키워드 검색, 상위 몇 개). 장소 선택용 */
+export async function searchPlaces(query: string): Promise<PlaceHit[]> {
+  const key = process.env.KAKAO_REST_KEY;
+  if (!key || !query.trim()) return [];
+  try {
+    const res = await fetch(
+      `https://dapi.kakao.com/v2/local/search/keyword.json?size=10&query=${encodeURIComponent(
+        query,
+      )}`,
+      { headers: { Authorization: `KakaoAK ${key}` }, cache: "no-store" },
+    );
+    if (!res.ok) return [];
+    const json = await res.json();
+    const docs: Array<Record<string, string>> = json?.documents ?? [];
+    return docs
+      .map((d) => ({
+        id: d.id,
+        name: d.place_name,
+        address: d.address_name,
+        roadAddress: d.road_address_name || null,
+        category: d.category_name?.split(">").pop()?.trim() || null,
+        lat: Number(d.y),
+        lng: Number(d.x),
+      }))
+      .filter((h) => !Number.isNaN(h.lat) && !Number.isNaN(h.lng));
+  } catch {
+    return [];
+  }
+}
+
 /** 장소명 → 좌표 (카카오 키워드 검색). 결과 없으면 null */
 export async function geocodePlace(query: string): Promise<Coord | null> {
   const key = process.env.KAKAO_REST_KEY;

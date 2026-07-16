@@ -4,7 +4,23 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getAdmin } from "@/lib/supabase/admin";
 import { getSession } from "@/lib/auth";
-import { geocodePlace } from "@/lib/geo/kakao";
+import { geocodePlace, searchPlaces, type PlaceHit } from "@/lib/geo/kakao";
+
+/** 장소 검색 (add/edit 폼의 후보 목록용) */
+export async function searchPlacesAction(query: string): Promise<PlaceHit[]> {
+  return searchPlaces(query);
+}
+
+/** 폼에서 선택한 좌표(lat/lng)를 파싱. 없으면 null */
+function coordFromForm(
+  formData: FormData,
+): { lat: number; lng: number } | null {
+  const lat = Number(formData.get("lat"));
+  const lng = Number(formData.get("lng"));
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) || (lat === 0 && lng === 0))
+    return null;
+  return { lat, lng };
+}
 
 async function touchCourse(courseId: string) {
   const session = await getSession();
@@ -98,7 +114,8 @@ export async function addStop(formData: FormData) {
     .maybeSingle();
   const sortOrder = (last?.sort_order ?? -1) + 1;
 
-  const coord = await geocodePlace(placeQuery);
+  // 검색으로 고른 좌표가 있으면 그대로 사용, 없으면 지오코딩
+  const coord = coordFromForm(formData) ?? (await geocodePlace(placeQuery));
 
   await admin.from("stops").insert({
     course_id: courseId,
@@ -130,19 +147,28 @@ export async function updateStop(formData: FormData) {
   const isReserved = formData.get("is_reserved") != null;
 
   const admin = getAdmin();
-  // 검색어가 바뀌었으면 재지오코딩
-  const { data: prev } = await admin
-    .from("stops")
-    .select("place_query, lat, lng")
-    .eq("id", id)
-    .maybeSingle();
+  const picked = coordFromForm(formData);
 
-  let lat = prev?.lat ?? null;
-  let lng = prev?.lng ?? null;
-  if (!prev || prev.place_query !== placeQuery || lat == null) {
-    const coord = await geocodePlace(placeQuery);
-    lat = coord?.lat ?? null;
-    lng = coord?.lng ?? null;
+  let lat: number | null;
+  let lng: number | null;
+  if (picked) {
+    // 검색으로 좌표를 새로 골랐으면 그대로 사용
+    lat = picked.lat;
+    lng = picked.lng;
+  } else {
+    // 검색어가 바뀌었거나 좌표가 없으면 재지오코딩
+    const { data: prev } = await admin
+      .from("stops")
+      .select("place_query, lat, lng")
+      .eq("id", id)
+      .maybeSingle();
+    lat = prev?.lat ?? null;
+    lng = prev?.lng ?? null;
+    if (!prev || prev.place_query !== placeQuery || lat == null) {
+      const coord = await geocodePlace(placeQuery);
+      lat = coord?.lat ?? null;
+      lng = coord?.lng ?? null;
+    }
   }
 
   await admin

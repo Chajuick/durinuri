@@ -6,11 +6,13 @@ import {
   getStops,
   getPhotos,
   getReviews,
+  getStopReviews,
   getMembersMap,
 } from "@/lib/data";
 import { getSession } from "@/lib/auth";
+import { ensureCoords } from "@/lib/geo/backfill";
 import { groupStopsByDay } from "@/lib/stops";
-import type { Photo } from "@/lib/types";
+import type { Photo, StopReview } from "@/lib/types";
 import { CourseHeader } from "@/components/CourseHeader";
 import { DayHeader } from "@/components/DayHeader";
 import { WeatherChip } from "@/components/WeatherChip";
@@ -22,22 +24,29 @@ import { deletePhoto, markPlanned } from "@/app/memories/actions";
 import { ReviewForm } from "./review-form";
 import { JourneyMemory } from "./journey";
 import { PhotoUploader } from "./photos";
+import { MemoryView } from "./view";
+import { ViewEditToggle } from "./view-edit-toggle";
+import { AddStop } from "@/app/plans/[id]/add-stop";
 
 export const dynamic = "force-dynamic";
 
 export default async function MemoryDetail({
   params,
+  searchParams,
 }: {
   params: { id: string };
+  searchParams?: { edit?: string };
 }) {
+  const editing = searchParams?.edit === "1";
   const course = await getCourse(params.id);
   if (!course) notFound();
   if (course.status !== "done") redirect(`/plans/${course.id}`);
 
-  const [stops, photos, reviews, members, session] = await Promise.all([
-    getStops(course.id),
+  const stops = await ensureCoords(await getStops(course.id));
+  const [photos, reviews, stopReviews, members, session] = await Promise.all([
     getPhotos(course.id),
     getReviews(course.id),
+    getStopReviews(course.id),
     getMembersMap(),
     getSession(),
   ]);
@@ -67,6 +76,13 @@ export default async function MemoryDetail({
     }
   }
 
+  const reviewsByStop = new Map<string, StopReview[]>();
+  for (const r of stopReviews) {
+    const arr = reviewsByStop.get(r.stop_id) ?? [];
+    arr.push(r);
+    reviewsByStop.set(r.stop_id, arr);
+  }
+
   return (
     <main className="mx-auto max-w-md px-5 pb-24 pt-6">
       <Link
@@ -79,6 +95,24 @@ export default async function MemoryDetail({
 
       <CourseHeader id={course.id} title={course.title} date={course.date} />
 
+      <div className="mt-4">
+        <ViewEditToggle editing={editing} />
+      </div>
+
+      {!editing ? (
+        <MemoryView
+          days={days}
+          dayWeather={dayWeather}
+          multiDay={multiDay}
+          photosByStop={photosByStop}
+          reviewsByStop={reviewsByStop}
+          orphanPhotos={orphanPhotos}
+          reviews={reviews}
+          members={members}
+          myId={myId}
+        />
+      ) : (
+        <>
       {!multiDay && dayWeather[0] && (
         <div className="mt-3">
           <WeatherChip weather={dayWeather[0]} />
@@ -88,13 +122,13 @@ export default async function MemoryDetail({
       {/* 여정별 추억 */}
       <section className="mt-6">
         {stops.length === 0 && (
-          <p className="rounded-md border border-dashed border-border bg-surface/60 px-4 py-6 text-center text-[13px] text-text-sub">
-            여정이 없어요. 「다시 갈 데이트로」에서 장소(여정)를 추가하면
-            여정마다 사진·한마디를 남길 수 있어요.
+          <p className="mb-3 rounded-md border border-dashed border-border bg-surface/60 px-4 py-6 text-center text-[13px] text-text-sub">
+            아직 여정이 없어요. 아래에서 장소(여정)를 추가하면
+            여정마다 사진·코멘트를 남길 수 있어요.
           </p>
         )}
         {days.map((day, di) => (
-          <div key={day.date ?? "nodate"}>
+          <div key={day.date ?? "nodate"} className={di > 0 ? "mt-9" : ""}>
             {multiDay && (
               <DayHeader
                 date={day.date}
@@ -111,6 +145,7 @@ export default async function MemoryDetail({
                   key={stop.id}
                   stop={stop}
                   photos={photosByStop.get(stop.id) ?? []}
+                  reviews={reviewsByStop.get(stop.id) ?? []}
                   members={members}
                   myId={myId}
                   courseId={course.id}
@@ -119,6 +154,7 @@ export default async function MemoryDetail({
             </div>
           </div>
         ))}
+        <AddStop courseId={course.id} courseDate={course.date} />
       </section>
 
       {/* 여정 없이 올린 사진 (예전 사진 또는 여정 없는 데이트) */}
@@ -238,6 +274,8 @@ export default async function MemoryDetail({
           </button>
         </form>
       </div>
+        </>
+      )}
     </main>
   );
 }
